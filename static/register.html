@@ -10,9 +10,10 @@
     <title>Student Information System</title>
 
     <style>
-        label{
+        label {
             padding-top: 5px;
         }
+
         .error {
             border: 1px solid red !important;
         }
@@ -67,7 +68,6 @@
         </div>
 
         <form class="container" disabled>
-
             <div class="row setup-content" id="step-1" hidden>
                 <div class="col-xs-12">
                     <div class="col-md-12 well text-center">
@@ -78,7 +78,8 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="student-id">Student ID:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" maxlength="6" class="form-control" id="student-id" placeholder="######">
+                                    <input type="text" maxlength="6" class="form-control" id="student-id"
+                                           placeholder="######">
                                 </div>
                             </div>
                             <br>
@@ -101,11 +102,9 @@
                     </div>
                 </div>
             </div>
-
         </form>
 
         <form class="container" disabled>
-
             <div class="row setup-content" id="step-2" hidden>
                 <div class="col-xs-12">
                     <div class="col-md-12 well text-center">
@@ -118,11 +117,9 @@
                     </div>
                 </div>
             </div>
-
         </form>
 
         <form class="container" disabled>
-
             <div class="row setup-content" id="step-3" hidden>
                 <div class="col-xs-12">
                     <div class="col-md-12 well text-center">
@@ -148,7 +145,6 @@
         </form>
 
         <form class="container" disabled>
-
             <div class="row setup-content" id="step-4" hidden>
                 <div class="col-xs-12">
                     <div class="col-md-12 well text-center">
@@ -159,13 +155,8 @@
                     </div>
                 </div>
             </div>
-
         </form>
-
-
-
     </div>
-
     <hr>
 
     <footer>
@@ -175,14 +166,13 @@
 
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         var navListItems = $('ul.setup-panel li a'),
             allWells = $('.setup-content');
 
         allWells.hide();
 
-        navListItems.click(function(e)
-        {
+        navListItems.click(function (e) {
             e.preventDefault();
             var $target = $($(this).attr('href')),
                 $item = $(this).closest('li');
@@ -198,19 +188,19 @@
         $('ul.setup-panel li.active a').trigger('click');
 
         // DEMO ONLY //
-        $('#activate-step-2').on('click', function(e) {
+        $('#activate-step-2').on('click', function (e) {
             e.preventDefault();
             var studentId = $("#student-id").val();
             var password = $("#password").val();
             var pin = $("#pin").val();
 
-            if(studentId.length < 6){
+            if (studentId.length < 6) {
                 $("#student-id").addClass("error");
-            }else if(pin.length < 6){
+            } else if (pin.length < 6) {
                 $("#pin").addClass("error");
-            }else if(password.length <= 4){
+            } else if (password.length <= 4) {
                 $("#password").addClass("error");
-            }else{
+            } else {
                 $("#student-id").removeClass("error");
                 $("#pin").removeClass("error");
                 $("#password").removeClass("error");
@@ -223,27 +213,26 @@
             }
         });
 
-        $('#activate-step-3').on('click', function(e) {
+        $('#activate-step-3').on('click', function (e) {
             $("#step-3").css('visibility', 'visible')
             $('ul.setup-panel li:eq(2)').removeClass('disabled');
             $('ul.setup-panel li a[href="#step-3"]').trigger('click');
             $(this).remove();
         });
 
-        $('#activate-step-4').on('click', function(e) {
+        $('#activate-step-4').on('click', function (e) {
             e.preventDefault();
-            if($("#agreement").is(":checked")){
+            if ($("#agreement").is(":checked")) {
                 $("#step-4").css('visibility', 'visible')
                 $('ul.setup-panel li:eq(3)').removeClass('disabled');
                 $('ul.setup-panel li a[href="#step-4"]').trigger('click');
                 $(this).remove();
-            }else{
+            } else {
                 $("#agreement").addClass("error");
             }
         });
     });
 </script>
-
 
 
 </body>
