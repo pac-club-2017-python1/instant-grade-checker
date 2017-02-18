@@ -8,19 +8,16 @@ CORS(app)
 
 @app.route("/api/register", methods=['POST'])
 def register():
-    json = request.json
+    json = request.form
 
     pin = json["pin"]
     studentId = json["studentId"]
     password = json["password"]
 
+    return login(studentId, password)[0]
 
-@app.route("/api/schoolCredentialCheck", methods=["POST"])
-def check_login():
-    json = request.form
-    studentId = json["studentId"]
-    password = json["password"]
 
+def login(studentId, password):
     with Browser('phantomjs') as browser:
         url = 'https://studentvue.vbcps.com/Login_Student_PXP.aspx'
         browser.visit(url)
@@ -30,8 +27,8 @@ def check_login():
         browser.find_by_id('Submit1').click()
 
         if browser.url == 'https://studentvue.vbcps.com/Home_PXP.aspx':
-            return "OK"
-    return "Error"
+            return "OK", browser
+    return "Error", browser
 
 @app.route("/")
 def index():

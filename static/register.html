@@ -208,9 +208,9 @@
             }
 
             if(canContinue){
-                $("#processingSpinner").css('visibility', 'visible')
-                toastr.info('This may take up to a minute', 'Processing')
-                $.post("http://127.0.0.1:5000/api/schoolCredentialCheck", { studentId: studentId, password: password }, function( data ) {
+                $("#processingSpinner").css('visibility', 'visible');
+                toastr.info('This may take up to a minute', 'Processing');
+                $.post("http://127.0.0.1:5000/api/register", { studentId: studentId, password: password, pin: pin}, function( data ) {
                     if(data === "OK"){
                         $("#student-id").removeClass("error");
                         $("#pin").removeClass("error");
@@ -220,12 +220,14 @@
                         $("#pin").attr("disabled", "disabled");
                         $("#password").attr("disabled", "disabled");
 
-                        $("#step-2").css('visibility', 'visible')
+                        $("#step-2").css('visibility', 'visible');
                         $('ul.setup-panel li:eq(1)').removeClass('disabled');
                         $('ul.setup-panel li a[href="#step-2"]').trigger('click');
                         $("#activate-step-2").remove();
                     }else{
-                        $("#processingSpinner").css('visibility', 'hidden')
+                        $("#processingSpinner").css('visibility', 'hidden');
+                        $("#password").addClass("error");
+                        $("#student-id").addClass("error");
                         toastr.error('The school student id/password combination is invalid', 'Incorrect values')
                     }
                 });
@@ -238,7 +240,7 @@
             e.preventDefault();
             if ($("#agreement").is(":checked")) {
                 $("#agreement").attr("disabled", "disabled");
-                $("#step-3").css('visibility', 'visible')
+                $("#step-3").css('visibility', 'visible');
                 $('ul.setup-panel li:eq(2)').removeClass('disabled');
                 $('ul.setup-panel li a[href="#step-3"]').trigger('click');
                 $(this).remove();
