@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Student Information System</title>
+
+    <style>
+        label{
+            padding-top: 5px;
+        }
+        .error {
+            border: 1px solid red !important;
+        }
+    </style>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="bower_components/bootstrap-validator/dist/validator.min.js"></script>
+
+</head>
+
+<body>
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-3">Registration</h1>
+        <p>Complete the following steps to complete your registration</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="container">
+            <div class="row form-group">
+                <div class="col-xs-12">
+                    <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                        <li class="active"><a href="#step-1">
+                            <h4 class="list-group-item-heading">Step 1</h4>
+                            <p class="list-group-item-text">Basic Information</p>
+                        </a></li>
+                        <li class="disabled"><a href="#step-2">
+                            <h4 class="list-group-item-heading">Step 2</h4>
+                            <p class="list-group-item-text">Fingerprint (optional)</p>
+                        </a></li>
+                        <li class="disabled"><a href="#step-3">
+                            <h4 class="list-group-item-heading">Step 3</h4>
+                            <p class="list-group-item-text">User Agreement</p>
+                        </a></li>
+                        <li class="disabled"><a href="#step-4">
+                            <h4 class="list-group-item-heading">Step 4</h4>
+                            <p class="list-group-item-text">Finish Up</p>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <form class="container" disabled>
+
+            <div class="row setup-content" id="step-1" hidden>
+                <div class="col-xs-12">
+                    <div class="col-md-12 well text-center">
+                        <h1> Basic Information</h1>
+
+                        <br>
+                        <form id="basic-information" class="form-horizontal" data-toggle="validator">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="student-id">Student ID:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" maxlength="6" class="form-control" id="student-id" placeholder="######">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="password">School Password:</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="password" placeholder="Password">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="pin">PIN:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" maxlength="6" class="form-control" id="pin" placeholder="######">
+                                </div>
+                            </div>
+                            <hr>
+                            <button id="activate-step-2" class="btn btn-primary btn-md">Next</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <form class="container" disabled>
+
+            <div class="row setup-content" id="step-2" hidden>
+                <div class="col-xs-12">
+                    <div class="col-md-12 well text-center">
+                        <h1 class="text-center"> Fingerprint (optional)</h1>
+
+                        <h3>Work in Progress, continue to third step</h3>
+                        <!--<form></form> -->
+
+                        <button id="activate-step-3" class="btn btn-primary btn-md">Next</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <form class="container" disabled>
+
+            <div class="row setup-content" id="step-3" hidden>
+                <div class="col-xs-12">
+                    <div class="col-md-12 well text-center">
+                        <h1 class="text-center"> User Agreement</h1>
+
+                        <textarea class="form-control" rows="10" disabled>
+                            This product is experimental, and may break without notice.
+                            More legal stuff...
+                        </textarea>
+
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" value="">
+                                I have read and agree to this agreement
+                            </label>
+                        </div>
+
+                        <button id="activate-step-4" class="btn btn-primary btn-md">Next</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <form class="container" disabled>
+
+            <div class="row setup-content" id="step-4" hidden>
+                <div class="col-xs-12">
+                    <div class="col-md-12 well text-center">
+                        <h1 class="text-center"> Finished</h1>
+                        <p>Thank you for registering for this application!</p>
+
+                        <a href="index.html">Login to my account</a>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+
+
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; VBCPS 2017</p>
+    </footer>
+</div> <!-- /container -->
+
+
+<script>
+    $(document).ready(function() {
+        var navListItems = $('ul.setup-panel li a'),
+            allWells = $('.setup-content');
+
+        allWells.hide();
+
+        navListItems.click(function(e)
+        {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this).closest('li');
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.closest('li').removeClass('active');
+                $item.addClass('active');
+                allWells.hide();
+                $target.show();
+            }
+        });
+
+        $('ul.setup-panel li.active a').trigger('click');
+
+        // DEMO ONLY //
+        $('#activate-step-2').on('click', function(e) {
+            e.preventDefault();
+            var studentId = $("#student-id").val();
+            var password = $("#password").val();
+            var pin = $("#pin").val();
+
+            if(studentId.length < 6){
+                $("#student-id").addClass("error");
+            }else if(pin.length < 6){
+                $("#pin").addClass("error");
+            }else if(password.length <= 4){
+                $("#password").addClass("error");
+            }else{
+                $("#student-id").removeClass("error");
+                $("#pin").removeClass("error");
+                $("#password").removeClass("error");
+
+
+                $("#step-2").css('visibility', 'visible')
+                $('ul.setup-panel li:eq(1)').removeClass('disabled');
+                $('ul.setup-panel li a[href="#step-2"]').trigger('click');
+                $(this).remove();
+            }
+        });
+
+        $('#activate-step-3').on('click', function(e) {
+            $("#step-3").css('visibility', 'visible')
+            $('ul.setup-panel li:eq(2)').removeClass('disabled');
+            $('ul.setup-panel li a[href="#step-3"]').trigger('click');
+            $(this).remove();
+        });
+
+        $('#activate-step-4').on('click', function(e) {
+            $("#step-4").css('visibility', 'visible')
+            $('ul.setup-panel li:eq(3)').removeClass('disabled');
+            $('ul.setup-panel li a[href="#step-4"]').trigger('click');
+            $(this).remove();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
