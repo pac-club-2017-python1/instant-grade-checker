@@ -52,14 +52,10 @@
                         </a></li>
                         <li class="disabled"><a href="#step-2">
                             <h4 class="list-group-item-heading">Step 2</h4>
-                            <p class="list-group-item-text">Fingerprint (optional)</p>
+                            <p class="list-group-item-text">User Agreement</p>
                         </a></li>
                         <li class="disabled"><a href="#step-3">
                             <h4 class="list-group-item-heading">Step 3</h4>
-                            <p class="list-group-item-text">User Agreement</p>
-                        </a></li>
-                        <li class="disabled"><a href="#step-4">
-                            <h4 class="list-group-item-heading">Step 4</h4>
                             <p class="list-group-item-text">Finish Up</p>
                         </a></li>
                     </ul>
@@ -108,21 +104,6 @@
             <div class="row setup-content" id="step-2" hidden>
                 <div class="col-xs-12">
                     <div class="col-md-12 well text-center">
-                        <h1 class="text-center"> Fingerprint (optional)</h1>
-
-                        <h3>Work in Progress, continue to third step</h3>
-                        <!--<form></form> -->
-
-                        <button id="activate-step-3" class="btn btn-primary btn-md">Next</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <form class="container" disabled>
-            <div class="row setup-content" id="step-3" hidden>
-                <div class="col-xs-12">
-                    <div class="col-md-12 well text-center">
                         <h1 class="text-center"> User Agreement</h1>
 
                         <textarea class="form-control" rows="10" disabled>
@@ -137,7 +118,7 @@
                             </label>
                         </div>
 
-                        <button id="activate-step-4" class="btn btn-primary btn-md">Next</button>
+                        <button id="activate-step-3" class="btn btn-primary btn-md">Next</button>
                     </div>
                 </div>
             </div>
@@ -145,11 +126,11 @@
         </form>
 
         <form class="container" disabled>
-            <div class="row setup-content" id="step-4" hidden>
+            <div class="row setup-content" id="step-3" hidden>
                 <div class="col-xs-12">
                     <div class="col-md-12 well text-center">
                         <h1 class="text-center"> Finished</h1>
-                        <p>Thank you for registering for this application!</p>
+                        <p>Thank you for registering for this application! You may add a fingerprint once you log in to your account.</p>
 
                         <button class="btn btn-secondary btn-md"><a href="index.html">Login to my account</a></button>
                     </div>
@@ -193,18 +174,31 @@
             var studentId = $("#student-id").val();
             var password = $("#password").val();
             var pin = $("#pin").val();
+            var canContinue = true;
 
             if (studentId.length < 6) {
                 $("#student-id").addClass("error");
-            } else if (pin.length < 6) {
+                canContinue = false;
+            }
+
+            if (pin.length < 6) {
                 $("#pin").addClass("error");
-            } else if (password.length <= 4) {
+                canContinue = false;
+            }
+
+            if (password.length <= 4) {
                 $("#password").addClass("error");
-            } else {
+                canContinue = false;
+            }
+
+            if(canContinue){
                 $("#student-id").removeClass("error");
                 $("#pin").removeClass("error");
                 $("#password").removeClass("error");
 
+                $("#student-id").attr("disabled", "disabled");
+                $("#pin").attr("disabled", "disabled");
+                $("#password").attr("disabled", "disabled");
 
                 $("#step-2").css('visibility', 'visible')
                 $('ul.setup-panel li:eq(1)').removeClass('disabled');
@@ -214,18 +208,12 @@
         });
 
         $('#activate-step-3').on('click', function (e) {
-            $("#step-3").css('visibility', 'visible')
-            $('ul.setup-panel li:eq(2)').removeClass('disabled');
-            $('ul.setup-panel li a[href="#step-3"]').trigger('click');
-            $(this).remove();
-        });
-
-        $('#activate-step-4').on('click', function (e) {
             e.preventDefault();
             if ($("#agreement").is(":checked")) {
-                $("#step-4").css('visibility', 'visible')
-                $('ul.setup-panel li:eq(3)').removeClass('disabled');
-                $('ul.setup-panel li a[href="#step-4"]').trigger('click');
+                $("#agreement").attr("disabled", "disabled");
+                $("#step-3").css('visibility', 'visible')
+                $('ul.setup-panel li:eq(2)').removeClass('disabled');
+                $('ul.setup-panel li a[href="#step-3"]').trigger('click');
                 $(this).remove();
             } else {
                 $("#agreement").addClass("error");
