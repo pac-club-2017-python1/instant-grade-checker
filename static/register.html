@@ -135,7 +135,7 @@
 
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" value="">
+                                <input class="form-check-input" type="checkbox" value="" id="agreement">
                                 I have read and agree to this agreement
                             </label>
                         </div>
@@ -155,7 +155,7 @@
                         <h1 class="text-center"> Finished</h1>
                         <p>Thank you for registering for this application!</p>
 
-                        <a href="index.html">Login to my account</a>
+                        <button class="btn btn-secondary btn-md"><a href="index.html">Login to my account</a></button>
                     </div>
                 </div>
             </div>
@@ -231,10 +231,15 @@
         });
 
         $('#activate-step-4').on('click', function(e) {
-            $("#step-4").css('visibility', 'visible')
-            $('ul.setup-panel li:eq(3)').removeClass('disabled');
-            $('ul.setup-panel li a[href="#step-4"]').trigger('click');
-            $(this).remove();
+            e.preventDefault();
+            if($("#agreement").is(":checked")){
+                $("#step-4").css('visibility', 'visible')
+                $('ul.setup-panel li:eq(3)').removeClass('disabled');
+                $('ul.setup-panel li a[href="#step-4"]').trigger('click');
+                $(this).remove();
+            }else{
+                $("#agreement").addClass("error");
+            }
         });
     });
 </script>
