@@ -1,7 +1,17 @@
-from flask import Flask
+from flask import Flask, request
 from flask import send_from_directory
 
 app = Flask(__name__)
+
+@app.route("/api/register", methods=['POST'])
+def register():
+    json = request.json
+
+    pin = json["pin"]
+    studentId = json["studentId"]
+    password = json["password"]
+
+
 
 
 @app.route("/")

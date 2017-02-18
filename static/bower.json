@@ -1,0 +1,19 @@
+{
+  "name": "igc-pac",
+  "homepage": "https://github.com/pac-club-2017/instant-grade-checker",
+  "authors": [
+    "Yoland Gao <yoland5286@gmail.com>"
+  ],
+  "license": "AGPLv3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "v4.0.0-alpha.6"
+  }
+}
