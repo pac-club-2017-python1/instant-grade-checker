@@ -1,9 +1,10 @@
+from flask.ext.cors import CORS
 from splinter import Browser
 from flask import Flask, request
 from flask import send_from_directory
 
 app = Flask(__name__)
-flaskBrowser = Flask(__name__)
+CORS(app)
 
 @app.route("/api/register", methods=['POST'])
 def register():
@@ -21,7 +22,7 @@ def check_login():
     password = json["password"]
 
     with Browser('phantomjs') as browser:
-        url = 'https://studentvue.vbcps.com/Login_Student_PXP.aspx?'
+        url = 'https://studentvue.vbcps.com/Login_Student_PXP.aspx'
         browser.visit(url)
 
         browser.find_by_id('username').fill(studentId)

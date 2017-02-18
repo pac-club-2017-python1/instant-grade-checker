@@ -17,18 +17,34 @@
         .error {
             border: 1px solid red !important;
         }
+
+        .glyphicon-refresh-animate {
+            -animation: spin .7s infinite linear;
+            -webkit-animation: spin2 .7s infinite linear;
+        }
+
+        @-webkit-keyframes spin2 {
+            from { -webkit-transform: rotate(0deg);}
+            to { -webkit-transform: rotate(360deg);}
+        }
+
+        @keyframes spin {
+            from { transform: scale(1) rotate(0deg);}
+            to { transform: scale(1) rotate(360deg);}
+        }
     </style>
 
     <!-- Bootstrap core CSS -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
     <script src="bower_components/bootstrap-validator/dist/validator.min.js"></script>
+    <link href="bower_components/toastr/toastr.min.css" rel="stylesheet">
+    <script src="bower_components/toastr/toastr.min.js"></script>
 
 </head>
 
@@ -93,7 +109,7 @@
                                 </div>
                             </div>
                             <hr>
-                            <button id="activate-step-2" class="btn btn-primary btn-md">Next</button>
+                            <button id="activate-step-2" class="btn btn-primary btn-md"><span id="processingSpinner" class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="visibility: hidden; display:inline-block;"></span> Next</button>
                         </form>
                     </div>
                 </div>
@@ -192,18 +208,29 @@
             }
 
             if(canContinue){
-                $("#student-id").removeClass("error");
-                $("#pin").removeClass("error");
-                $("#password").removeClass("error");
+                $("#processingSpinner").css('visibility', 'visible')
+                toastr.info('This may take up to a minute', 'Processing')
+                $.post("http://127.0.0.1:5000/api/schoolCredentialCheck", { studentId: studentId, password: password }, function( data ) {
+                    if(data === "OK"){
+                        $("#student-id").removeClass("error");
+                        $("#pin").removeClass("error");
+                        $("#password").removeClass("error");
 
-                $("#student-id").attr("disabled", "disabled");
-                $("#pin").attr("disabled", "disabled");
-                $("#password").attr("disabled", "disabled");
+                        $("#student-id").attr("disabled", "disabled");
+                        $("#pin").attr("disabled", "disabled");
+                        $("#password").attr("disabled", "disabled");
 
-                $("#step-2").css('visibility', 'visible')
-                $('ul.setup-panel li:eq(1)').removeClass('disabled');
-                $('ul.setup-panel li a[href="#step-2"]').trigger('click');
-                $(this).remove();
+                        $("#step-2").css('visibility', 'visible')
+                        $('ul.setup-panel li:eq(1)').removeClass('disabled');
+                        $('ul.setup-panel li a[href="#step-2"]').trigger('click');
+                        $("#activate-step-2").remove();
+                    }else{
+                        $("#processingSpinner").css('visibility', 'hidden')
+                        toastr.error('The school student id/password combination is invalid', 'Incorrect values')
+                    }
+                });
+            }else{
+                toastr.error('Please input correct values', 'Incorrect values')
             }
         });
 
@@ -216,7 +243,7 @@
                 $('ul.setup-panel li a[href="#step-3"]').trigger('click');
                 $(this).remove();
             } else {
-                $("#agreement").addClass("error");
+                toastr.error('Please agree to the user agreement', 'Error')
             }
         });
     });
