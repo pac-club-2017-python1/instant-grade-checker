@@ -16,7 +16,7 @@ def controller(app, models, db):
         token = request.args.get('token')
         with session_scope(db) as session:
             user = session.query(User).filter(User.token == token).first()
-            if user and auth_controller.user_keys[user.student_id] is not None:
+            if user and int(user.student_id) in auth_controller.user_keys:
                 string = fileio.read("static/dashboard.html")
                 password = auth_controller.user_keys[user.student_id]
                 browser = studentvue.get_browser_authenticated(user.student_id, password)

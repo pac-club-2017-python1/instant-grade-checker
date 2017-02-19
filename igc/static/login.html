@@ -70,6 +70,7 @@
                 if(data.startsWith("OK")){
                     var token = data.split(";")[1];
                     localStorage.setItem("token", token);
+                    document.location = "dashboard.html?token=" + token;
                 }else{
                     toastr.error(data, "Error")
                 }

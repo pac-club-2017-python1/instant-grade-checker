@@ -54,7 +54,7 @@ def controller(app, models, db):
                 key = crypto.generate_fernet_key(pin, user.salt)
                 fernet = crypto.get_fernet_with_key(key)
                 success, password = crypto.login(fernet, user.hash)
-                user_keys[studentId] = password
+                user_keys[int(studentId)] = password
 
                 if success:
                         tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
