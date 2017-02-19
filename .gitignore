@@ -327,5 +327,5 @@ bh_unicode_properties.cache
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
 
-static/bower_components/
+igc/static/bower_components/
 *.db

@@ -2,12 +2,13 @@ import base64
 import os
 
 from cryptography.fernet import Fernet
-from flask_cors import CORS
-from splinter import Browser
 from flask import Flask, request
 from flask import send_from_directory
-import crypto
-import models
+from flask_cors import CORS
+from splinter import Browser
+
+from igc import crypto, models
+from igc.util import session_scope
 
 app = Flask(__name__)
 CORS(app)
@@ -25,20 +26,30 @@ def register():
     password = json["password"]
     status = check_authentication(studentId, password)[0]
 
-    salt = Fernet.generate_key()[:25]
-    pre_key = pin + "_" + salt
-    key = base64.urlsafe_b64encode(pre_key)
+    if(pin.isdigit()):
+        salt = Fernet.generate_key()[:25]
+        pre_key = pin + "_" + salt
+        key = base64.urlsafe_b64encode(pre_key)
 
-    fernet = crypto.get_fernet_with_key(key)
-    hash = fernet.encrypt(bytes(password))
+        fernet = crypto.get_fernet_with_key(key)
+        hash = fernet.encrypt(bytes(password))
 
-    if status == "OK":
-        user = User(studentId, hash, salt)
-        db.session.add(user)
-        db.session.commit()
-        return "OK"
+        if status == "OK":
+            with session_scope() as session:
+                exists = session.query(User).filter(User.student_id == studentId).first()
+                if exists:
+                    return 'This user already has an account. Do you want to <a href="../index.html">Log in?</a>'
+                else:
+                    user = User(int(studentId), hash, salt)
+                    db.session.add(user)
+                    db.session.commit()
+                    return "OK"
+        else:
+            return "Invalid Student ID/PIN combination"
     else:
-        return status
+        return "Invalid PIN"
+
+
 
 def check_authentication(studentId, password):
     with Browser('phantomjs') as browser:

@@ -228,7 +228,7 @@
                         $("#processingSpinner").css('visibility', 'hidden');
                         $("#password").addClass("error");
                         $("#student-id").addClass("error");
-                        toastr.error('The school student id/password combination is invalid', 'Incorrect values')
+                        toastr.error(data, 'Incorrect values')
                     }
                 });
             }else{

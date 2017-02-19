@@ -7,8 +7,7 @@ def create_sql_alchemy(app):
     class User(db.Model):
         __tablename__ = "user"
 
-        id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-        student_id = db.Column(db.String(120))
+        student_id = db.Column(db.Integer, primary_key=True)
         hash = db.Column(db.Text)
         salt = db.Column(db.String(120))
         token = db.Column(db.String(120))
