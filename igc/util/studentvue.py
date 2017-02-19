@@ -11,9 +11,13 @@ def check_authentication(studentId, password):
         browser.find_by_id('Submit1').click()
 
         if browser.url == 'https://studentvue.vbcps.com/Home_PXP.aspx':
-            return "OK", browser
-    return "Error", browser
+            return True, browser
+    return False, browser
 
 
 def get_browser_authenticated(studentId, password):
-   return check_authentication(studentId, password)[1]
+    isCorrect, browser = check_authentication(studentId, password)
+    if isCorrect:
+        return browser
+    else:
+        raise AssertionError("Invalid user credentials")

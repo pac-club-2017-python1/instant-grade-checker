@@ -8,6 +8,8 @@ from igc.util.util import session_scope
 
 def controller(app, models, db):
 
+    user_keys = {}
+
     @app.route("/api/register", methods=['POST'])
     def register():
         User = models["user"]
@@ -16,14 +18,14 @@ def controller(app, models, db):
         pin = json["pin"]
         studentId = json["studentId"]
         password = json["password"]
-        status = check_authentication(studentId, password)[0]
+        isCorrect = check_authentication(studentId, password)[0]
 
         if pin.isdigit():
             key, salt = crypto.generate_fernet_key(pin)
             fernet = crypto.get_fernet_with_key(key)
             hash = fernet.encrypt(bytes(password))
 
-            if status == "OK":
+            if isCorrect:
                 with session_scope(db) as session:
                     exists = session.query(User).filter(User.student_id == studentId).first()
                     if exists:
@@ -49,8 +51,7 @@ def controller(app, models, db):
             user = session.query(User).filter(User.student_id == studentId).first()
             if user:
                 key = crypto.generate_fernet_key(pin, user.salt)
-                #TODO Keep this in memory somewhere
-
+                user_keys[studentId] = key
                 fernet = crypto.get_fernet_with_key(key)
                 success, password = crypto.login(fernet, user.hash)
 
