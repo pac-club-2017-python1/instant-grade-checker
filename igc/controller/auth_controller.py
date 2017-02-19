@@ -6,9 +6,10 @@ from igc.util import crypto
 from igc.util.studentvue import check_authentication
 from igc.util.util import session_scope
 
-def controller(app, models, db):
 
-    user_keys = {}
+user_keys = {}
+
+def controller(app, models, db):
 
     @app.route("/api/register", methods=['POST'])
     def register():
@@ -51,13 +52,13 @@ def controller(app, models, db):
             user = session.query(User).filter(User.student_id == studentId).first()
             if user:
                 key = crypto.generate_fernet_key(pin, user.salt)
-                user_keys[studentId] = key
                 fernet = crypto.get_fernet_with_key(key)
                 success, password = crypto.login(fernet, user.hash)
+                user_keys[studentId] = password
 
                 if success:
-                    tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
-                    tokengen = studentId + "_" + tokengen
-                    user.token = tokengen
-                    return "OK;" + tokengen
-            return "Username/password combination is incorrect"
+                        tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
+                        tokengen = studentId + "_" + tokengen
+                        user.token = tokengen
+                        return "OK;" + tokengen
+                return "Username/password combination is incorrect"
