@@ -9,6 +9,7 @@ def session_scope(db):
     try:
         yield session
         session.commit()
+        session.flush()
     except:
         session.rollback()
         raise

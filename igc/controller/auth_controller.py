@@ -1,6 +1,5 @@
-import base64
+import random
 
-from cryptography.fernet import Fernet
 from flask import request
 
 from igc.util import crypto
@@ -20,10 +19,7 @@ def controller(app, models, db):
         status = check_authentication(studentId, password)[0]
 
         if pin.isdigit():
-            salt = Fernet.generate_key()[:25]
-            pre_key = pin + "_" + salt
-            key = base64.urlsafe_b64encode(pre_key)
-
+            key, salt = crypto.generate_fernet_key(pin)
             fernet = crypto.get_fernet_with_key(key)
             hash = fernet.encrypt(bytes(password))
 
@@ -31,13 +27,36 @@ def controller(app, models, db):
                 with session_scope(db) as session:
                     exists = session.query(User).filter(User.student_id == studentId).first()
                     if exists:
-                        return 'This user already has an account. Do you want to <a href="../index.html">Log in?</a>'
+                        return 'This user already has an account. Do you want to <a href="../index.html">log in?</a>'
                     else:
                         user = User(int(studentId), hash, salt)
                         db.session.add(user)
-                        db.session.commit()
                         return "OK"
             else:
                 return "Invalid Student ID/PIN combination"
         else:
             return "Invalid PIN"
+
+    @app.route("/api/login", methods=['POST'])
+    def login():
+        User = models["user"]
+
+        json = request.form
+        pin = json["pin"]
+        studentId = json["studentId"]
+
+        with session_scope(db) as session:
+            user = session.query(User).filter(User.student_id == studentId).first()
+            if user:
+                key = crypto.generate_fernet_key(pin, user.salt)
+                #TODO Keep this in memory somewhere
+
+                fernet = crypto.get_fernet_with_key(key)
+                success, password = crypto.login(fernet, user.hash)
+
+                if success:
+                    tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
+                    tokengen = studentId + "_" + tokengen
+                    user.token = tokengen
+                    return "OK;" + tokengen
+            return "Username/password combination is incorrect"

@@ -18,8 +18,17 @@ def login(f, token):
     except InvalidToken:
         return False, None
 
-def generate_fernet_key(pin):
-    salt = Fernet.generate_key()[:25]
-    pre_key = pin + "_" + salt
+def generate_fernet_key(pin, salt=None):
+    useSalt = None
+    if salt == None:
+        useSalt = Fernet.generate_key()[:25]
+    else:
+        useSalt = salt;
+
+    pre_key = pin + "_" + useSalt
     key = base64.urlsafe_b64encode(pre_key)
-    return key
+
+    if(salt == None):
+        return key, useSalt
+    else:
+        return key
