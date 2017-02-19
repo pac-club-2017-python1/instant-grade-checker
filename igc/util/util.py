@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 
 
 @contextmanager
-def session_scope():
-    session = Session()
+def session_scope(db):
+    session = Session(db.engine)
     try:
         yield session
         session.commit()

@@ -28,7 +28,7 @@ def controller(app, models, db):
             hash = fernet.encrypt(bytes(password))
 
             if status == "OK":
-                with session_scope() as session:
+                with session_scope(db) as session:
                     exists = session.query(User).filter(User.student_id == studentId).first()
                     if exists:
                         return 'This user already has an account. Do you want to <a href="../index.html">Log in?</a>'
