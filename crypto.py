@@ -1,3 +1,5 @@
+import base64
+
 from cryptography.fernet import Fernet, InvalidToken
 
 def get_fernet_with_key(key):
@@ -15,3 +17,9 @@ def login(f, token):
         return True, password
     except InvalidToken:
         return False, None
+
+def generate_fernet_key(pin):
+    salt = Fernet.generate_key()[:25]
+    pre_key = pin + "_" + salt
+    key = base64.urlsafe_b64encode(pre_key)
+    return key
