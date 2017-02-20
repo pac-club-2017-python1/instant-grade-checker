@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask import send_from_directory
 from flask_cors import CORS
+from gevent.wsgi import WSGIServer
 
 from igc.controller.controller_register import register_controllers
 
@@ -22,4 +23,6 @@ def send_static(path):
     return send_from_directory('static', path)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, port=5000)
+    # http_server = WSGIServer(('', 5000), app)
+    # http_server.serve_forever()

@@ -33,7 +33,8 @@ def controller(app, models, db):
                         return 'This user already has an account. Do you want to <a href="../index.html">log in?</a>'
                     else:
                         user = User(int(studentId), hash, salt)
-                        db.session.add(user)
+                        session.add(user)
+                        session.flush()
                         return "OK"
             else:
                 return "Invalid Student ID/PIN combination"
@@ -61,4 +62,5 @@ def controller(app, models, db):
                         tokengen = studentId + "_" + tokengen
                         user.token = tokengen
                         return "OK;" + tokengen
-                return "Username/password combination is incorrect"
+
+        return "Username/password combination is incorrect"
