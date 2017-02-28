@@ -19,6 +19,7 @@
     <div class="container">
         <h1 class="display-3">Dashboard</h1>
         <p>{full_name}</p>
+        <button id="logout" class="btn btn-danger btn-lg">Logout</button>
     </div>
 </div>
 
@@ -50,5 +51,13 @@
 <script src="bower_components/bootstrap-validator/dist/validator.min.js"></script>
 <link href="bower_components/toastr/toastr.min.css" rel="stylesheet">
 <script src="bower_components/toastr/toastr.min.js"></script>
+<script>
+    $("#logout").click(function(e){
+        location.pathname = "/index.html"
+        location.search = ""
+    });
+
+
+</script>
 </body>
 </html>
