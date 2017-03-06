@@ -25,7 +25,7 @@ def controller(app, models, db):
 
                 u = None
                 array = browser.find_by_css(".row_subhdr")
-                if(len(array) > 1):
+                if len(array) > 1:
                     u = array[len(array) - 1]
                 else:
                     u = array.first
@@ -49,7 +49,6 @@ def controller(app, models, db):
                         tableBody += ("<td>" + children[2].text + "</td>")
                         tableBody += ("<td>" + children[3].text + "</td>")
                         tableBody += ("<td>" + children[4].text + "</td>")
-
 
                 tableBody += "<tr>"
                 string = string.replace("{table_body}", tableBody)
