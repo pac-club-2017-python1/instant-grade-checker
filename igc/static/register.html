@@ -187,6 +187,8 @@
         // DEMO ONLY //
         $('#activate-step-2').on('click', function (e) {
             e.preventDefault();
+            $("#activate-step-2").prop("disabled",true);
+
             var studentId = $("#student-id").val();
             var password = $("#password").val();
             var pin = $("#pin").val();
@@ -225,6 +227,7 @@
                         $('ul.setup-panel li a[href="#step-2"]').trigger('click');
                         $("#activate-step-2").remove();
                     }else{
+                        $("#activate-step-2").prop("disabled",false);
                         $("#processingSpinner").css('visibility', 'hidden');
                         $("#password").addClass("error");
                         $("#student-id").addClass("error");
