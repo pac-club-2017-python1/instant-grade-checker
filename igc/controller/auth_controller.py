@@ -2,6 +2,7 @@ import random
 
 from flask import request
 
+from igc.util import cache
 from igc.util import crypto
 from igc.util.studentvue import check_authentication
 from igc.util.util import session_scope
@@ -35,6 +36,8 @@ def controller(app, models, db):
                         user = User(int(studentId), hash, salt)
                         session.add(user)
                         session.flush()
+
+                        cache.addStudent(int(studentId), password)
                         return "OK"
             else:
                 return "Invalid Student ID/PIN combination"
@@ -56,6 +59,8 @@ def controller(app, models, db):
                 fernet = crypto.get_fernet_with_key(key)
                 success, password = crypto.login(fernet, user.hash)
                 user_keys[int(studentId)] = password
+
+                cache.addStudent(int(studentId), password)
 
                 if success:
                         tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
