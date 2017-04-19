@@ -27,6 +27,6 @@ if __name__ == '__main__':
     thread = cache.CacheThread()
     thread.start()
 
-    # app.run(debug=True, port=5000)
-    http_server = WSGIServer(('', 5000), app)
-    http_server.serve_forever()
+    app.run(debug=True, port=5000)
+    # http_server = WSGIServer(('', 5000), app)
+    # http_server.serve_forever()

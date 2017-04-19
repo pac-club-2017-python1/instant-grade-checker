@@ -1,11 +1,10 @@
 import base64
 import random
 import string
-
-from cryptography.fernet import Fernet, InvalidToken
+from Crypto.Cipher import DES
 
 def get_fernet_with_key(key):
-    return Fernet(key)
+    return Fernet2(key)
 
 def encrypt(f, msg):
     return f.encrypt(str(msg))
@@ -17,7 +16,7 @@ def login(f, token):
     try:
         password = decrypt(f, token)
         return True, password
-    except InvalidToken:
+    except AssertionError:
         return False, None
 
 def generate_fernet_key(pin, salt=None):
@@ -36,12 +35,18 @@ def generate_fernet_key(pin, salt=None):
 
 class Fernet2:
     key = None
+    des = None
 
     def __init__(self, key):
         self.key = key
+        self.des = DES.new(key, DES.MODE_ECB)
 
     def encrypt(self, msg):
-        pass
+        return self.des.encrypt(msg + "CHECK")
 
     def decrypt(self, msg):
-        pass
+        plaintext = self.des.decrypt(msg)
+        if "CHECK" not in plaintext:
+            raise AssertionError("Invalid key")
+        else:
+            return plaintext[:-5]
