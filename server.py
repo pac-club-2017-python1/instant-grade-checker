@@ -20,7 +20,7 @@ def index():
 
 @app.route("/<path:path>")
 def send_static(path):
-    return send_from_directory('static', path)
+    return send_from_directory('html', path)
 
 if __name__ == '__main__':
     thread = cache.CacheThread()
