@@ -1,4 +1,6 @@
 import base64
+import random
+import string
 
 from cryptography.fernet import Fernet, InvalidToken
 
@@ -19,16 +21,27 @@ def login(f, token):
         return False, None
 
 def generate_fernet_key(pin, salt=None):
-    useSalt = None
-    if salt == None:
-        useSalt = Fernet.generate_key()[:25]
+    if salt is None:
+        useSalt = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(25))
     else:
         useSalt = salt
 
     pre_key = pin + "_" + useSalt
     key = base64.urlsafe_b64encode(pre_key)
 
-    if(salt == None):
+    if salt is None:
         return key, useSalt
     else:
         return key
+
+class Fernet2:
+    key = None
+
+    def __init__(self, key):
+        self.key = key
+
+    def encrypt(self, msg):
+        pass
+
+    def decrypt(self, msg):
+        pass
