@@ -7,7 +7,7 @@ from flask_cors import CORS
 from igc.controller.controller_register import register_controllers
 from igc.util import cache
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='html')
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('database_uri', 'sqlite:///./sqllite.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
