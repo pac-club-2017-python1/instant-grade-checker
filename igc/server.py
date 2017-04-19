@@ -3,10 +3,9 @@ import os
 from flask import Flask
 from flask import send_from_directory
 from flask_cors import CORS
-from gevent.wsgi import WSGIServer
 
-from igc.controller.controller_register import register_controllers
-from igc.util import cache
+from controller.controller_register import register_controllers
+from util import cache
 
 app = Flask(__name__)
 CORS(app)
