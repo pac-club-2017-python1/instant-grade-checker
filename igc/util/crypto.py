@@ -23,7 +23,7 @@ def generate_fernet_key(pin, salt=None):
     if salt == None:
         useSalt = Fernet.generate_key()[:25]
     else:
-        useSalt = salt;
+        useSalt = salt
 
     pre_key = pin + "_" + useSalt
     key = base64.urlsafe_b64encode(pre_key)
