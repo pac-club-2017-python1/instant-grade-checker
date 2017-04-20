@@ -69,8 +69,16 @@ def identify():
     print "Put your fingerprint on the scanner"
     f.CmosLed(True)
 
+    times = 0
     while not isFingerPressed(f):
         time.sleep(1)
+        times += 1
+
+        if times > 10:
+            break
+    if times > 10:
+        return False, -1000
+
     f.CaptureFinger(best_image=False)
     f.CmosLed(False)
     ide = f.Identify()
