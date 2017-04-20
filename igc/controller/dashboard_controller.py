@@ -168,7 +168,7 @@ def controller(app, models, db):
                 user = session.query(User).filter(User.fid == target).first()
                 if user and int(user.student_id) in auth_controller.user_keys:
                     tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
-                    tokengen = user.student_id + "_" + tokengen
+                    tokengen = str(user.student_id) + "_" + tokengen
                     user.token = tokengen
                     return "OK;" + tokengen
                 else:
