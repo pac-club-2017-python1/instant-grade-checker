@@ -20,6 +20,9 @@ def login(f, token):
         return False, None
 
 def generate_fernet_key(pin, salt=None):
+    if len(pin) != 6:
+        raise ValueError("Pin must be 6 digits")
+
     if salt is None:
         useSalt = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(25))
     else:

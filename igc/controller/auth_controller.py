@@ -24,24 +24,27 @@ def controller(app, models, db):
         browser.quit()
 
         if pin.isdigit():
-            key, salt = crypto.generate_fernet_key(pin)
-            fernet = crypto.get_fernet_with_key(key)
-            hash = fernet.encrypt(bytes(password))
+            try:
+                key, salt = crypto.generate_fernet_key(pin)
+                fernet = crypto.get_fernet_with_key(key)
+                hash = fernet.encrypt(bytes(password))
 
-            if isCorrect:
-                with session_scope(db) as session:
-                    exists = session.query(User).filter(User.student_id == studentId).first()
-                    if exists:
-                        return 'This user already has an account. Do you want to <a href="../index.html">log in?</a>'
-                    else:
-                        user = User(int(studentId), hash, salt)
-                        session.add(user)
-                        session.flush()
+                if isCorrect:
+                    with session_scope(db) as session:
+                        exists = session.query(User).filter(User.student_id == studentId).first()
+                        if exists:
+                            return 'This user already has an account. Do you want to <a href="../index.html">log in?</a>'
+                        else:
+                            user = User(int(studentId), hash, salt)
+                            session.add(user)
+                            session.flush()
 
-                        cache.addStudent(int(studentId), password)
-                        return "OK"
-            else:
-                return "Invalid Student ID/PIN combination"
+                            cache.addStudent(int(studentId), password)
+                            return "OK"
+                else:
+                    return "Invalid Student ID/PIN combination"
+            except ValueError:
+                return "Your pin must be 6 digits long"
         else:
             return "Invalid PIN"
 
@@ -55,7 +58,7 @@ def controller(app, models, db):
 
         with session_scope(db) as session:
             user = session.query(User).filter(User.student_id == studentId).first()
-            if user:
+            if user and len(pin) == 6:
                 key = crypto.generate_fernet_key(pin, user.salt)
                 fernet = crypto.get_fernet_with_key(key)
                 success, password = crypto.login(fernet, user.hash)
