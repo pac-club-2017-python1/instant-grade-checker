@@ -1,3 +1,5 @@
+import random
+
 from flask import redirect
 from flask import request
 
@@ -156,3 +158,20 @@ def controller(app, models, db):
                     return "Error: Please try again"
             else:
                 return "Error: Authentication problem"
+
+    @app.route("/api/identifyFp")
+    def enroll_fingerprint():
+        User = models["user"]
+        with session_scope(db) as session:
+            success, target = scanner.identify()
+            if success:
+                user = session.query(User).filter(User.fid == target).first()
+                if int(user.student_id) in auth_controller.user_keys:
+                    tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
+                    tokengen = user.student_id + "_" + tokengen
+                    user.token = tokengen
+                    return "OK;" + tokengen
+                else:
+                    return "Error: You must log in once manually with your PIN before using the scanner"
+            else:
+                return "Error: No fingerprint identified"

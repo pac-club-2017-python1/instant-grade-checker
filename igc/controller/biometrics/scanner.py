@@ -62,5 +62,23 @@ def enroll():
         return False, -100
 
 
+def identify():
+    f = fp.FingerPi()
+    f.Open(extra_info=True, check_baudrate=True)
+    f.ChangeBaudrate(115200)
+    print "Put your fingerprint on the scanner"
+    f.CmosLed(True)
+
+    while not isFingerPressed(f):
+        time.sleep(1)
+    f.CaptureFinger(best_image=False)
+    f.CmosLed(False)
+    ide = f.Identify()
+
+    if ide and ide[0] and ide[0]["ACK"]:
+        return bool(ide[0]["ACK"]), int(ide[0]["Parameter"])
+    else:
+        return False, -1000
+
 def isFingerPressed(fp):
     return int(fp.IsPressFinger()[0]["Parameter"]) == 0
