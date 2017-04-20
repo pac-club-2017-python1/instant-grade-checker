@@ -96,10 +96,14 @@ def controller(app, models, db):
         
         $("#startFingerprint").click(function(e){
            $.get("http://127.0.0.1:5000/api/enrollFp?token=" + getParameterByName("token"), function( data ) {
-              alert("Starting"); 
+              $("#fingerprintModal").modal('hide');
+              if(data !== "OK"){
+                 toastr.error(data, "Message");
+              }else{
+                 toastr.success("Successfully enrolled fingerprint", "Success");
+              }
            });
         });
-    
     
         function getParameterByName(name, url) {
             if (!url) url = window.location.href;
@@ -149,6 +153,6 @@ def controller(app, models, db):
                     user.fingerprint_id = fid
                     return "OK"
                 else:
-                    return "Please try again"
+                    return "Error: Please try again"
             else:
-                return redirect("index.html?reason=login", code=302)
+                return "Error: Authentication problem"
