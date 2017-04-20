@@ -160,7 +160,7 @@ def controller(app, models, db):
                 return "Error: Authentication problem"
 
     @app.route("/api/identifyFp")
-    def enroll_fingerprint():
+    def identify_fingerprint():
         User = models["user"]
         with session_scope(db) as session:
             success, target = scanner.identify()
