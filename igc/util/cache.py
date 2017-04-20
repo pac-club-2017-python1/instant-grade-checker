@@ -21,6 +21,7 @@ def cacheStudentData(studentId, student):
     full_name = studentvue.get_full_name(browser)
     welcome_message = studentvue.get_welcome_message(browser)
     table_body = studentvue.get_table_body(browser)
+    browser.quit()
 
     student["full_name"] = full_name
     student["welcome_message"] = welcome_message
