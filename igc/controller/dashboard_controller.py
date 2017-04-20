@@ -166,7 +166,7 @@ def controller(app, models, db):
             success, target = scanner.identify()
             if success:
                 user = session.query(User).filter(User.fid == target).first()
-                if int(user.student_id) in auth_controller.user_keys:
+                if user and int(user.student_id) in auth_controller.user_keys:
                     tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
                     tokengen = user.student_id + "_" + tokengen
                     user.token = tokengen

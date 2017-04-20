@@ -84,6 +84,7 @@ def identify():
     ide = f.Identify()
 
     if ide and ide[0] and ide[0]["ACK"]:
+        print bool(ide[0]["ACK"]), int(ide[0]["Parameter"])
         return bool(ide[0]["ACK"]), int(ide[0]["Parameter"])
     else:
         return False, -1000
