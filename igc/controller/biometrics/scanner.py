@@ -56,8 +56,8 @@ def enroll():
     print "Enrolled :" + str(f.GetEnrollCount()[0]["Parameter"])
     f.Close()
 
-    if enroll3 and enroll3[0] and enroll3[0][0] and enroll3[0][0]["ACK"]:
-        return bool(enroll3[0][0]["ACK"]), id
+    if enroll3 and enroll3[0] and enroll3[0]["ACK"]:
+        return bool(enroll3[0]["ACK"]), id
     else:
         return False, -100
 
