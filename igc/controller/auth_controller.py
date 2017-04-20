@@ -20,7 +20,7 @@ def controller(app, models, db):
         pin = json["pin"]
         studentId = json["studentId"]
         password = json["password"]
-        isCorrect, browser = check_authentication(studentId, password)[0]
+        isCorrect, browser = check_authentication(studentId, password)
         browser.quit()
 
         if pin.isdigit():
