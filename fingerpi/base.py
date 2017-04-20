@@ -99,8 +99,11 @@ def decode_command_packet(packet):
     response['Header'] = hex(packet[0])[2:] + hex(packet[1])[2:]
     response['DeviceID'] = hex(packet[2])[2:]
     response['ACK'] = packet[4] != 0x31 # Not NACK, might be command
-    response['Parameter'] = packet[3] if response['ACK'] else errors[packet[3]]
 
+    if response['ACK']:
+        response['Parameter'] = packet[3]
+    else:
+        response['Parameter'] = errors[packet[3]]
     return response
 
 def decode_data_packet(packet):
