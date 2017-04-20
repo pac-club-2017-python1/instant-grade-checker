@@ -6,7 +6,7 @@ import fingerpi as fp
 def enroll():
     f = fp.FingerPi()
     f.Open(extra_info=True, check_baudrate=True)
-    # f.ChangeBaudrate(115200)
+    f.ChangeBaudrate(115200)
     print "Put your fingerprint on the scanner"
     f.CmosLed(True)
 
@@ -56,7 +56,10 @@ def enroll():
     print "Enrolled :" + str(f.GetEnrollCount()[0]["Parameter"])
     f.Close()
 
-    return bool(enroll3[0][0]["ACK"]), id
+    if enroll3 and enroll3[0] and enroll3[0][0] and enroll3[0][0]["ACK"]:
+        return bool(enroll3[0][0]["ACK"]), id
+    else:
+        return False, -100
 
 
 def isFingerPressed(fp):
