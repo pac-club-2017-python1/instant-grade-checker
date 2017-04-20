@@ -36,6 +36,11 @@ def controller(app, models, db):
     
     <div class="container">
         <div class="row">
+            <button id="recordFingerprint" class="btn btn-success btn-lg">Record/Update your Fingerprint</button>
+        </div>
+    
+        
+        <div class="row">
             <table class="table table-hover table-bordered">
                 <thead>
                     {table_headers}
@@ -54,6 +59,24 @@ def controller(app, models, db):
     </div> <!-- /container -->
     
     
+    <div class="modal fade" tabindex="-1" role="dialog" id="fingerprintModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Record Fingerprint</h4>
+          </div>
+          <div class="modal-body">
+            <p>Press your finger on the scanner, and hold until the scanner light turns off.</p>
+            <button id="startFingerprint" class="btn btn-success btn-lg">Start</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -66,6 +89,14 @@ def controller(app, models, db):
         $("#logout").click(function(e){
             location.pathname = "/index.html"
             location.search = ""
+        });
+        
+        $("#recordFingerprint").click(function(e){
+            $("#fingerprintModal").modal('show');
+        });
+        
+        $("#startFingerprint").click(function(e){
+           alert("Starting"); 
         });
     
     </script>
