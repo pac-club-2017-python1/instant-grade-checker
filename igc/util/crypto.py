@@ -1,7 +1,7 @@
 import base64
 import random
 import string
-from Crypto.Cipher import DES
+from Crypto.Cipher import AES
 
 def get_fernet_with_key(key):
     return Fernet2(key)
@@ -21,7 +21,7 @@ def login(f, token):
 
 def generate_fernet_key(pin, salt=None):
     if salt is None:
-        useSalt = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(25))
+        useSalt = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(249))
     else:
         useSalt = salt
 
@@ -35,17 +35,17 @@ def generate_fernet_key(pin, salt=None):
 
 class Fernet2:
     key = None
-    des = None
+    aes = None
 
     def __init__(self, key):
         self.key = key
-        self.des = DES.new(key, DES.MODE_ECB)
+        self.aes = AES.new(key, AES.MODE_ECB)
 
     def encrypt(self, msg):
-        return self.des.encrypt(msg + "CHECK")
+        return self.aes.encrypt(msg + "CHECK")
 
     def decrypt(self, msg):
-        plaintext = self.des.decrypt(msg)
+        plaintext = self.aes.decrypt(msg)
         if "CHECK" not in plaintext:
             raise AssertionError("Invalid key")
         else:
