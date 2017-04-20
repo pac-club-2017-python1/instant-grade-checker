@@ -21,7 +21,7 @@ def login(f, token):
 
 def generate_fernet_key(pin, salt=None):
     if salt is None:
-        useSalt = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(249))
+        useSalt = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(25))
     else:
         useSalt = salt
 
