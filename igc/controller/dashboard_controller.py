@@ -15,7 +15,7 @@ def controller(app, models, db):
         with session_scope(db) as session:
             user = session.query(User).filter(User.token == token).first()
             if user and int(user.student_id) in auth_controller.user_keys:
-                string = fileio.read("../../static/dashboard.html")
+                string = fileio.read("dashboard.html")
 
                 if students[user.student_id]["table_body"] is None:
                     cacheStudentData(user.student_id, students[user.student_id])
