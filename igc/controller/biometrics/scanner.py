@@ -2,12 +2,11 @@ import time
 
 import fingerpi as fp
 
-f = fp.FingerPi()
-f.Open(extra_info=True, check_baudrate=True)
-f.ChangeBaudrate(115200)
-
 
 def enroll():
+    f = fp.FingerPi()
+    f.Open(extra_info=True, check_baudrate=True)
+    # f.ChangeBaudrate(115200)
     print "Put your fingerprint on the scanner"
     f.CmosLed(True)
 
