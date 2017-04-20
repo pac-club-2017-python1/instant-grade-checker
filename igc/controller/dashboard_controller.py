@@ -1,9 +1,8 @@
 from flask import redirect
 from flask import request
 
-from igc.controller import auth_controller, biometrics
+from igc.controller import auth_controller
 from igc.controller.biometrics import scanner
-from igc.util import fileio
 from igc.util.util import session_scope
 from igc.util.cache import students, cacheStudentData
 
@@ -127,6 +126,19 @@ def controller(app, models, db):
             else:
                 return redirect("index.html?reason=login", code=302)
 
-    @app.route("/api/enrollFp")
+    @app.route("/api/enrollFp", methods=['POST'])
     def enroll_fingerprint():
-        scanner.enroll()
+        User = models["user"]
+        token = request.args.get('token')
+        with session_scope(db) as session:
+            user = session.query(User).filter(User.token == token).first()
+            if user and int(user.student_id) in auth_controller.user_keys:
+                success, fid = scanner.enroll()
+                print success, fid
+                if success:
+                    user.fingerprint_id = fid
+                    return "OK"
+                else:
+                    return "Please try again"
+            else:
+                return redirect("index.html?reason=login", code=302)

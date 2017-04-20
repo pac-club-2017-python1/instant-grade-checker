@@ -57,6 +57,8 @@ def enroll():
     print "Enrolled :" + str(f.GetEnrollCount()[0]["Parameter"])
     f.Close()
 
+    return bool(enroll3[0]["Ack"]), id
+
 
 def isFingerPressed(fp):
     return int(fp.IsPressFinger()[0]["Parameter"]) == 0
