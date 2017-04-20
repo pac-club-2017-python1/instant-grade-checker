@@ -65,7 +65,7 @@ def enroll():
 def identify():
     f = fp.FingerPi()
     f.Open(extra_info=True, check_baudrate=True)
-    f.ChangeBaudrate(115200)
+    #f.ChangeBaudrate(115200)
     print "Put your fingerprint on the scanner"
     f.CmosLed(True)
 
@@ -76,7 +76,8 @@ def identify():
 
         if times > 10:
             break
-    if times > 10:
+    if times > 5:
+        f.CmosLed(False)
         return False, -1000
 
     f.CaptureFinger(best_image=False)
