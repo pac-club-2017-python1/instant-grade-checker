@@ -132,7 +132,7 @@ def controller(app, models, db):
         token = request.args.get('token')
         with session_scope(db) as session:
             user = session.query(User).filter(User.token == token).first()
-            if user and int(user.student_id) in auth_controller.user_keys:
+            if user:
                 success, fid = scanner.enroll()
                 print success, fid
                 if success:
