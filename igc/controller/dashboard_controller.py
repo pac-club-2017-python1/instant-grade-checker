@@ -95,11 +95,21 @@ def controller(app, models, db):
         });
         
         $("#startFingerprint").click(function(e){
-           $.post("http://127.0.0.1:5000/api/enrollFp", {token: jQuery.url.param("token")}, function( data ) {
+           $.post("http://127.0.0.1:5000/api/enrollFp", {token: getParameterByName("token")}, function( data ) {
               alert("Starting"); 
            });
         });
     
+    
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
     </script>
     </body>
     </html>
