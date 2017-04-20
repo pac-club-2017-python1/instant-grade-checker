@@ -95,7 +95,7 @@ def controller(app, models, db):
         });
         
         $("#startFingerprint").click(function(e){
-           $.post("http://127.0.0.1:5000/api/enrollFp", {token: getParameterByName("token")}, function( data ) {
+           $.get("http://127.0.0.1:5000/api/enrollFp?token=" + getParameterByName("token"), function( data ) {
               alert("Starting"); 
            });
         });
@@ -136,7 +136,7 @@ def controller(app, models, db):
             else:
                 return redirect("index.html?reason=login", code=302)
 
-    @app.route("/api/enrollFp", methods=['POST'])
+    @app.route("/api/enrollFp")
     def enroll_fingerprint():
         User = models["user"]
         token = request.args.get('token')
