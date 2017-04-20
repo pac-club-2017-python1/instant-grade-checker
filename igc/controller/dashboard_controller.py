@@ -1,7 +1,8 @@
 from flask import redirect
 from flask import request
 
-from igc.controller import auth_controller
+from igc.controller import auth_controller, biometrics
+from igc.controller.biometrics import scanner
 from igc.util import fileio
 from igc.util.util import session_scope
 from igc.util.cache import students, cacheStudentData
@@ -35,10 +36,9 @@ def controller(app, models, db):
     </div>
     
     <div class="container">
-        <div class="row">
+        <div class="row" style='padding-bottom: 10px'>
             <button id="recordFingerprint" class="btn btn-success btn-lg">Record/Update your Fingerprint</button>
         </div>
-    
         
         <div class="row">
             <table class="table table-hover table-bordered">
@@ -96,7 +96,9 @@ def controller(app, models, db):
         });
         
         $("#startFingerprint").click(function(e){
-           alert("Starting"); 
+           $.post("http://127.0.0.1:5000/api/enrollFp", function( data ) {
+              alert("Starting"); 
+           });
         });
     
     </script>
@@ -124,3 +126,7 @@ def controller(app, models, db):
                 return string
             else:
                 return redirect("index.html?reason=login", code=302)
+
+    @app.route("/api/enrollFp")
+    def enroll_fingerprint():
+        scanner.enroll()
