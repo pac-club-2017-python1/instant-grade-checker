@@ -95,7 +95,7 @@ def controller(app, models, db):
         });
         
         $("#startFingerprint").click(function(e){
-           $.post("http://127.0.0.1:5000/api/enrollFp", function( data ) {
+           $.post("http://127.0.0.1:5000/api/enrollFp", {token: jQuery.url.param("token")}, function( data ) {
               alert("Starting"); 
            });
         });
