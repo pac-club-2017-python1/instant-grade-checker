@@ -53,7 +53,7 @@ def enroll():
     print "Enroll 3 done " + str(enroll3)
 
     f.CmosLed(False)
-    print "Enrolled :" + str(f.GetEnrollCount()[0]["Parameter"])
+    print "Enrolled: " + str(f.GetEnrollCount()[0]["Parameter"])
     f.Close()
 
     if enroll3 and enroll3[0] and enroll3[0]["ACK"]:
@@ -74,7 +74,7 @@ def identify():
         time.sleep(1)
         times += 1
 
-        if times > 10:
+        if times > 5:
             break
     if times > 5:
         f.CmosLed(False)
@@ -83,6 +83,7 @@ def identify():
     f.CaptureFinger(best_image=False)
     f.CmosLed(False)
     ide = f.Identify()
+    f.Close()
 
     if ide and ide[0] and ide[0]["ACK"]:
         print bool(ide[0]["ACK"]), int(ide[0]["Parameter"])
