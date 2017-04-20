@@ -9,7 +9,7 @@ from igc.util import cache
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('database_uri', 'sqlite:///./sqllite.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///./sqllite.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 register_controllers(app)

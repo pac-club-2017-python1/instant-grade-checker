@@ -25,9 +25,7 @@ def generate_fernet_key(pin, salt=None):
     else:
         useSalt = salt
 
-    pre_key = pin + "_" + useSalt
-    key = base64.urlsafe_b64encode(pre_key)
-
+    key = pin + "_" + useSalt
     if salt is None:
         return key, useSalt
     else:
@@ -37,16 +35,20 @@ class Fernet2:
     key = None
     aes = None
 
+    IV = "INSTANTGRADECHEK"
+
     def __init__(self, key):
         self.key = key
-        self.aes = AES.new(key, AES.MODE_ECB)
+        self.aes = AES.new(key, AES.MODE_CFB, self.IV)
 
     def encrypt(self, msg):
-        return self.aes.encrypt(msg + "CHECK")
+        ciphertext = base64.urlsafe_b64encode(self.aes.encrypt(msg + "CHECK"))
+        return ciphertext
 
     def decrypt(self, msg):
-        plaintext = self.aes.decrypt(msg)
+        plaintext = self.aes.decrypt(base64.urlsafe_b64decode(msg))
         if "CHECK" not in plaintext:
             raise AssertionError("Invalid key")
         else:
             return plaintext[:-5]
+
