@@ -16,11 +16,11 @@ register_controllers(app)
 
 @app.route("/")
 def index():
-    return app.send_static_file('/html/index.html')
+    return app.send_static_file('index.html')
 
 @app.route("/<path:path>")
 def send_static(path):
-    return send_from_directory('/html', path)
+    return send_from_directory('static', path)
 
 if __name__ == '__main__':
     thread = cache.CacheThread()
