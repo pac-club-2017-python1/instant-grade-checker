@@ -152,7 +152,7 @@ def controller(app, models, db):
                 success, fid = scanner.enroll()
                 print success, fid
                 if success:
-                    user.fingerprint_id = fid
+                    user.fid = fid
                     return "OK"
                 else:
                     return "Error: Please try again"
@@ -166,8 +166,6 @@ def controller(app, models, db):
             success, target = scanner.identify()
             if success:
                 user = session.query(User).filter(User.fid == target).first()
-                print str(auth_controller.user_keys)
-                print user, int(user.student_id) in auth_controller.user_keys
                 if user and int(user.student_id) in auth_controller.user_keys:
                     tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
                     tokengen = user.student_id + "_" + tokengen
