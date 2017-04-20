@@ -103,7 +103,8 @@ def decode_command_packet(packet):
     if response['ACK']:
         response['Parameter'] = packet[3]
     else:
-        response['Parameter'] = errors[packet[3]]
+        if packet[3] in errors:
+            response['Parameter'] = errors[packet[3]]
     return response
 
 def decode_data_packet(packet):
