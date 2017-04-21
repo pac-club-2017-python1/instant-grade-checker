@@ -147,7 +147,7 @@ def controller(app, models, db):
                 string = string.replace("{table_body}", cache["table_body"])
                 return string
             else:
-                return redirect("index.html?reason=login", code=302)
+                return redirect("index.html#login", code=302)
 
     @app.route("/api/enrollFp")
     def enroll_fingerprint():
