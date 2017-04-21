@@ -10,8 +10,14 @@ def enroll():
     print "Put your fingerprint on the scanner"
     f.CmosLed(True)
 
+    timer = 0
     while not isFingerPressed(f):
         time.sleep(1)
+        timer += 1
+        if timer > 5:
+            f.CmosLed(False)
+            f.Close()
+            return False, None
     id = int(f.GetEnrollCount()[0]["Parameter"]) + 1
     f.DeleteId(id)
 
@@ -29,8 +35,14 @@ def enroll():
     print "Enroll 1 done " + str(enroll1)
 
     #Wait using fingerPressed
+    timer = 0
     while not isFingerPressed(f):
         time.sleep(1)
+        timer += 1
+        if timer > 5:
+            f.CmosLed(False)
+            f.Close()
+            return False, None
 
     #Capture Finger
     f.CaptureFinger(best_image=True)
@@ -41,8 +53,14 @@ def enroll():
     print "Enroll 2 done " + str(enroll2)
 
     #Wait using fingerPressed
+    timer = 0
     while not isFingerPressed(f):
         time.sleep(1)
+        timer += 1
+        if timer > 5:
+            f.CmosLed(False)
+            f.Close()
+            return False, None
 
     #Capture Finger
     f.CaptureFinger(best_image=True)
@@ -59,7 +77,7 @@ def enroll():
     if enroll3 and enroll3[0] and enroll3[0]["ACK"]:
         return bool(enroll3[0]["ACK"]), id
     else:
-        return False, -100
+        return False, None
 
 
 def identify():
@@ -75,21 +93,20 @@ def identify():
         times += 1
 
         if times > 5:
-            break
-    if times > 5:
-        f.CmosLed(False)
-        return False, -1000
-
+            f.CmosLed(False)
+            f.Close()
+            return False, -1000
     f.CaptureFinger(best_image=False)
     f.CmosLed(False)
     ide = f.Identify()
+
     f.Close()
 
     if ide and ide[0] and ide[0]["ACK"]:
         print bool(ide[0]["ACK"]), int(ide[0]["Parameter"])
         return bool(ide[0]["ACK"]), int(ide[0]["Parameter"])
     else:
-        return False, -1000
+        return False, None
 
 def isFingerPressed(fp):
     return int(fp.IsPressFinger()[0]["Parameter"]) == 0

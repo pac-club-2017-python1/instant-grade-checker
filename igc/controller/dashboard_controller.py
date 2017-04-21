@@ -4,7 +4,6 @@ from flask import redirect
 from flask import request
 
 from igc.controller import auth_controller
-from igc.controller.biometrics import scanner
 from igc.util.util import session_scope
 from igc.util.cache import students, cacheStudentData
 
@@ -18,6 +17,14 @@ def controller(app, models, db):
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
         <meta name="author" content="">
+        
+        <!-- Disable caching -->
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+        
         <link rel="icon" href="favicon.ico">
     
         <title>Student Information System</title>
@@ -144,6 +151,8 @@ def controller(app, models, db):
 
     @app.route("/api/enrollFp")
     def enroll_fingerprint():
+        from igc.controller.biometrics import scanner
+
         User = models["user"]
         token = request.args.get('token')
         with session_scope(db) as session:
@@ -161,6 +170,8 @@ def controller(app, models, db):
 
     @app.route("/api/identifyFp")
     def identify_fingerprint():
+        from igc.controller.biometrics import scanner
+
         User = models["user"]
         with session_scope(db) as session:
             success, target = scanner.identify()
