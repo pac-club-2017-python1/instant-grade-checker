@@ -30,8 +30,10 @@ def controller(app, models, db):
         <title>Student Information System</title>
     
         <!-- Bootstrap core CSS -->
-        <link href="../../static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+        <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/responsive_table.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
     </head>
     
     <body>
@@ -49,18 +51,21 @@ def controller(app, models, db):
         </div>
         
         <div class="row">
-            <table class="table table-hover table-bordered">
-                <thead>
-                    {table_headers}
-                </thead>
-                <tbody>
-                    {table_body}
-                </tbody>
-            </table>
-        </div>
-    
+            <ul class="nav nav-tabs">
+              <li role="presentation" class="active"><a href="#">Grades</a></li>
+            </ul>
+            <div class="panel panel-default">
+              <table class="table table-hover table-mc-light-blue">
+                    <thead>
+                        {table_headers}
+                    </thead>
+                    <tbody>
+                        {table_body}
+                    </tbody>
+                </table>
+            </div>
+        </div>  
         <hr>
-    
         <footer>
             <p>&copy; VBCPS 2017</p>
         </footer>
