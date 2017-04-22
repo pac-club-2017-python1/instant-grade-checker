@@ -100,8 +100,7 @@ def controller(app, models, db):
     <script src="../../static/bower_components/toastr/toastr.min.js"></script>
     <script>
         $("#logout").click(function(e){
-            location.pathname = "/index.html"
-            location.search = ""
+            window.location = "/index.html?token=logout#logout";
         });
         
         $("#recordFingerprint").click(function(e){
