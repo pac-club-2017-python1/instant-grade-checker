@@ -1,2 +1,2 @@
-rm -rf ../sqllite.db
-rm -rf ../ghostdriver.log
+rm -rf ./sqllite.db
+rm -rf ./ghostdriver.log
