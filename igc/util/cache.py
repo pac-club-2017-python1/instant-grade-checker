@@ -36,13 +36,14 @@ class CacheThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        while True:
-            for studentId in students:
-                student = students[studentId]
-                lastUpdated = student["lastUpdated"]
-                currentTime = int(time.time())
-                shouldUpdate = (currentTime - lastUpdated) > 60*60
-                if shouldUpdate:
-                    cacheStudentData(studentId, student)
-                time.sleep(2)
-            time.sleep(10)
+        # while True:
+        #     for studentId in students:
+        #         student = students[studentId]
+        #         lastUpdated = student["lastUpdated"]
+        #         currentTime = int(time.time())
+        #         shouldUpdate = (currentTime - lastUpdated) > 60*60
+        #         if shouldUpdate:
+        #             cacheStudentData(studentId, student)
+        #         time.sleep(2)
+        #     time.sleep(10)
+        pass
