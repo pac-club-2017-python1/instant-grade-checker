@@ -1,21 +1,35 @@
 import threading
-
 import time
 
 from igc.util import studentvue
 
-students = {}
+lock = threading.Lock()
+_students = {}
 
 def addStudent(studentId, password):
-    if type(studentId) is not int:
-        raise AssertionError("Student ID must be int")
+    lock.acquire()
+    try:
+        if type(studentId) is not int:
+            raise AssertionError("Student ID must be int")
+        if not _students.has_key(studentId):
+            _students[studentId] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
+    finally:
+        lock.release()
 
-    if not students.has_key(studentId):
-        students[studentId] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
+
+
+def getStudent(studentId, lockMethod=True):
+    if lockMethod:
+        lock.acquire()
+    try:
+        return _students[studentId]
+    finally:
+        if lockMethod:
+            lock.release()
 
 def cacheStudentData(studentId, student):
     password = student["password"]
-    print("Caching for student id: " + str(studentId))
+    print("Caching for student id: " + str(studentId) + " on thread: " +  str(threading.current_thread))
     browser = studentvue.get_browser_authenticated(studentId, password)
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
     full_name = studentvue.get_full_name(browser)
@@ -27,23 +41,26 @@ def cacheStudentData(studentId, student):
     student["welcome_message"] = welcome_message
     student["table_body"] = table_body
     student["lastUpdated"] = int(time.time())
-    print("Finished caching for student id: " + str(studentId))
+    print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread))
 
 class CacheThread(threading.Thread):
 
     def __init__(self):
-        print("Cache started")
         threading.Thread.__init__(self)
 
     def run(self):
-        # while True:
-        #     for studentId in students:
-        #         student = students[studentId]
-        #         lastUpdated = student["lastUpdated"]
-        #         currentTime = int(time.time())
-        #         shouldUpdate = (currentTime - lastUpdated) > 60*60
-        #         if shouldUpdate:
-        #             cacheStudentData(studentId, student)
-        #         time.sleep(2)
-        #     time.sleep(10)
-        pass
+        print("Cache started")
+        while True:
+            try:
+                lock.acquire()
+                for studentId in _students:
+                    student = getStudent(studentId, False)
+                    lastUpdated = student["lastUpdated"]
+                    currentTime = int(time.time())
+                    shouldUpdate = (currentTime - lastUpdated) > 60*60
+                    if shouldUpdate:
+                        cacheStudentData(studentId, student)
+                    time.sleep(2)
+            finally:
+                lock.release()
+            time.sleep(10)

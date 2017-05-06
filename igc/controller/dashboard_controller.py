@@ -5,7 +5,7 @@ from flask import request
 
 from igc.controller import auth_controller
 from igc.util.util import session_scope
-from igc.util.cache import students, cacheStudentData
+from igc.util.cache import getStudent, cacheStudentData
 
 def controller(app, models, db):
 
@@ -142,10 +142,10 @@ def controller(app, models, db):
             if user and int(user.student_id) in auth_controller.user_keys:
                 string = template
 
-                if students[user.student_id]["table_body"] is None:
-                    cacheStudentData(user.student_id, students[user.student_id])
+                if getStudent(user.student_id)["table_body"] is None:
+                    cacheStudentData(user.student_id, getStudent(user.student_id))
 
-                cache = students[user.student_id]
+                cache = getStudent(user.student_id)
                 string = string.replace("{full_name}", cache["full_name"])
                 string = string.replace("{table_headers}", cache["welcome_message"])
                 string = string.replace("{table_body}", cache["table_body"])
