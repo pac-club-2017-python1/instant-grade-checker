@@ -28,7 +28,12 @@ def getStudent(studentId, lockMethod=True):
             lock.release()
 
 def cacheStudentData(studentId, student):
-    password = student["password"]
+    lock.acquire()
+    try:
+        password = student["password"]
+    finally:
+        lock.release()
+
     print("Caching for student id: " + str(studentId) + " on thread: " +  str(threading.current_thread))
     browser = studentvue.get_browser_authenticated(studentId, password)
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
@@ -37,11 +42,16 @@ def cacheStudentData(studentId, student):
     table_body = studentvue.get_table_body(browser)
     browser.quit()
 
-    student["full_name"] = full_name
-    student["welcome_message"] = welcome_message
-    student["table_body"] = table_body
-    student["lastUpdated"] = int(time.time())
-    print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread))
+    lock.acquire()
+    try:
+        student["full_name"] = full_name
+        student["welcome_message"] = welcome_message
+        student["table_body"] = table_body
+        student["lastUpdated"] = int(time.time())
+        print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread))
+    finally:
+        lock.release()
+
 
 class CacheThread(threading.Thread):
 
@@ -51,6 +61,7 @@ class CacheThread(threading.Thread):
     def run(self):
         print("Cache started")
         while True:
+            updateArray = []
             try:
                 lock.acquire()
                 for studentId in _students:
@@ -59,8 +70,11 @@ class CacheThread(threading.Thread):
                     currentTime = int(time.time())
                     shouldUpdate = (currentTime - lastUpdated) > 60*60
                     if shouldUpdate:
-                        cacheStudentData(studentId, student)
-                    time.sleep(2)
+                        updateArray.append({"studentId" : studentId, "student" : student})
             finally:
                 lock.release()
+
+            for studentObj in updateArray:
+                cacheStudentData(studentObj["studentId"], studentObj["student"])
+                time.sleep(2)
             time.sleep(10)
