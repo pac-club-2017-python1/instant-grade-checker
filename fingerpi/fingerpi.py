@@ -3,18 +3,8 @@
 
 import os
 
-from igc.controller.biometrics import biometrics_globals
 from .base import *
 
-def module_exists(module_name):
-    try:
-        __import__(module_name)
-    except ImportError:
-        return False
-    else:
-        return True
-
-biometrics_globals.fingerprintConnected = module_exists("serial")
 
 class FingerPi():
     def __init__(self,
