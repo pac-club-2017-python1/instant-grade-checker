@@ -34,7 +34,7 @@ def cacheStudentData(studentId, student):
     finally:
         lock.release()
 
-    print("Caching for student id: " + str(studentId) + " on thread: " +  str(threading.current_thread))
+    print("Caching for student id: " + str(studentId) + " on thread: " +  str(threading.current_thread()))
     browser = studentvue.get_browser_authenticated(studentId, password)
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
     full_name = studentvue.get_full_name(browser)
@@ -48,7 +48,7 @@ def cacheStudentData(studentId, student):
         student["welcome_message"] = welcome_message
         student["table_body"] = table_body
         student["lastUpdated"] = int(time.time())
-        print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread))
+        print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread()))
     finally:
         lock.release()
 
@@ -59,7 +59,7 @@ class CacheThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        print("Cache started")
+        print("Cache started on thread: " + str(threading.current_thread()))
         while True:
             updateArray = []
             try:

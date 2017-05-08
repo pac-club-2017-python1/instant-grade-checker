@@ -21,6 +21,8 @@ def controller(app, models, db):
         studentId = json["studentId"]
         password = json["password"]
         isCorrect, browser = check_authentication(studentId, password)
+        if browser is None:
+            return "Server connection error"
         browser.quit()
 
         if pin.isdigit():

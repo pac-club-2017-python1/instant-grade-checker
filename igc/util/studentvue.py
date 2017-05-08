@@ -6,9 +6,13 @@ def check_authentication(studentId, password):
     url = 'https://parentvue.vbcps.com/Login_Student_PXP.aspx'
     browser.visit(url)
 
-    browser.find_by_id('username').fill(studentId)
-    browser.find_by_id('password').fill(password)
-    browser.find_by_id('Submit1').click()
+    try:
+        browser.find_by_id('username').fill(studentId)
+        browser.find_by_id('password').fill(password)
+        browser.find_by_id('Submit1').click()
+    except AttributeError:
+        return False, None
+
 
     if browser.url == 'https://parentvue.vbcps.com/Home_PXP.aspx':
         return True, browser
@@ -18,7 +22,7 @@ def check_authentication(studentId, password):
 
 def get_browser_authenticated(studentId, password):
     isCorrect, browser = check_authentication(studentId, password)
-    if isCorrect:
+    if isCorrect and browser is not None:
         return browser
     else:
         raise AssertionError("Invalid user credentials")

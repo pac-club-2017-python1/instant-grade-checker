@@ -156,6 +156,9 @@ def controller(app, models, db):
     @app.route("/api/enrollFp")
     def enroll_fingerprint():
         from igc.controller.biometrics import scanner
+        from igc.controller.biometrics import biometrics_globals
+        if not biometrics_globals.fingerprintConnected:
+            return "Scanner is not connected"
 
         User = models["user"]
         token = request.args.get('token')
@@ -175,6 +178,10 @@ def controller(app, models, db):
     @app.route("/api/identifyFp")
     def identify_fingerprint():
         from igc.controller.biometrics import scanner
+        from igc.controller.biometrics import biometrics_globals
+        if not biometrics_globals.fingerprintConnected:
+            return "Scanner is not connected"
+
 
         User = models["user"]
         with session_scope(db) as session:
