@@ -2,9 +2,8 @@
 """Communication with the Fingerprint Scanner using R-Pi"""
 
 import os
-
+import serial
 from .base import *
-
 
 class FingerPi():
     def __init__(self,
