@@ -156,10 +156,6 @@ def controller(app, models, db):
     @app.route("/api/enrollFp")
     def enroll_fingerprint():
         from igc.controller.biometrics import scanner
-        from igc.controller.biometrics import biometrics_globals
-        if not biometrics_globals.fingerprintConnected:
-            return "Scanner is not connected"
-
         User = models["user"]
         token = request.args.get('token')
         with session_scope(db) as session:
@@ -178,10 +174,6 @@ def controller(app, models, db):
     @app.route("/api/identifyFp")
     def identify_fingerprint():
         from igc.controller.biometrics import scanner
-        from igc.controller.biometrics import biometrics_globals
-        if not biometrics_globals.fingerprintConnected:
-            return "Scanner is not connected"
-
 
         User = models["user"]
         with session_scope(db) as session:
@@ -192,6 +184,7 @@ def controller(app, models, db):
                     tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
                     tokengen = str(user.student_id) + "_" + tokengen
                     user.token = tokengen
+                    user.times = user.times + 1
                     return "OK;" + tokengen
                 else:
                     return "Error: You must log in once manually with your PIN before using the scanner"
