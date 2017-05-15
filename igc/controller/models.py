@@ -12,13 +12,17 @@ def create_sql_alchemy(app):
         salt = db.Column(db.String(120))
         token = db.Column(db.String(120))
         fid = db.Column(db.Integer)
+        pid = db.Column(db.String(120))
+        times = db.Column(db.Integer)
 
-        def __init__(self, student_id, hash, salt, token=None, fid=-100):
+        def __init__(self, student_id, hash, salt, token=None, fid=-100, pid="NULL", times=0):
             self.student_id = student_id
             self.hash = hash
             self.salt = salt
             self.token = token
             self.fid = fid
+            self.pid = pid
+            self.times = times
 
     db.create_all()
     return db, User

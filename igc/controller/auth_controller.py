@@ -1,3 +1,4 @@
+import base64
 import random
 
 from flask import request
@@ -38,6 +39,8 @@ def controller(app, models, db):
                             return 'This user already has an account. Do you want to <a href="../index.html">log in?</a>'
                         else:
                             user = User(int(studentId), hash, salt)
+                            if cache.ALLOW_PIN_CACHE:
+                                user.pid = base64.urlsafe_b64encode(pin)
                             session.add(user)
                             session.flush()
 
@@ -65,7 +68,8 @@ def controller(app, models, db):
                 fernet = crypto.get_fernet_with_key(key)
                 success, password = crypto.login(fernet, user.hash)
                 user_keys[int(studentId)] = password
-
+                if cache.ALLOW_PIN_CACHE:
+                    user.pid = base64.urlsafe_b64encode(pin)
                 cache.addStudent(int(studentId), password)
 
                 if success:

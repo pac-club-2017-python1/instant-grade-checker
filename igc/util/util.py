@@ -2,6 +2,8 @@ from contextlib import contextmanager
 
 from sqlalchemy.orm import Session
 
+db = None
+models = None
 
 @contextmanager
 def session_scope(db):

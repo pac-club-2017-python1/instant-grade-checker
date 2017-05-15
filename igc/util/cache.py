@@ -1,10 +1,26 @@
+import base64
 import threading
 import time
 
-from igc.util import studentvue
+from igc.util import studentvue, util, crypto
+from igc.util.util import session_scope
 
 lock = threading.Lock()
 _students = {}
+ALLOW_PIN_CACHE = True
+
+def initalizeCache():
+    if ALLOW_PIN_CACHE:
+        User = util.models["user"]
+        with session_scope(util.db) as session:
+            users = session.query(User).all()
+            for user in users:
+                if user.pid != "NULL":
+                    key = crypto.generate_fernet_key(base64.urlsafe_b64decode(str(user.pid)), user.salt)
+                    fernet = crypto.get_fernet_with_key(key)
+                    success, password = crypto.login(fernet, user.hash)
+                    if success:
+                        _students[user.student_id] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
 
 def addStudent(studentId, password):
     lock.acquire()
@@ -15,8 +31,6 @@ def addStudent(studentId, password):
             _students[studentId] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
     finally:
         lock.release()
-
-
 
 def getStudent(studentId, lockMethod=True):
     if lockMethod:

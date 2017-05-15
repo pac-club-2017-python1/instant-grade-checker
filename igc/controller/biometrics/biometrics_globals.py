@@ -1,1 +1,0 @@
-fingerprintConnected = False

@@ -11,8 +11,10 @@ app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///./sqllite.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 register_controllers(app)
+cache.initalizeCache()
+thread = cache.CacheThread()
+thread.start()
 
 @app.route("/")
 def index():
@@ -22,10 +24,4 @@ def index():
 def send_static(path):
     return send_from_directory('static', path)
 
-if __name__ == '__main__':
-    thread = cache.CacheThread()
-    thread.start()
-
-    app.run(debug=True, port=5000)
-    # http_server = WSGIServer(('', 5000), app)
-    # http_server.serve_forever()
+app.run(debug=False, port=5000)
