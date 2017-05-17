@@ -147,7 +147,7 @@ def controller(app, models, db):
 
                 cache = getStudent(user.student_id)
                 string = string.replace("{full_name}", cache["full_name"])
-                string = string.replace("{table_headers}", cache["welcome_message"])
+                string = string.replace("{table_headers}", cache["table_headers"])
                 string = string.replace("{table_body}", cache["table_body"])
                 return string
             else:

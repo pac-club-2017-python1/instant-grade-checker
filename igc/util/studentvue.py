@@ -32,7 +32,43 @@ def get_full_name(browser):
     return browser.find_by_css('.UserHead').find_by_css("*").first.text.title()
 
 
-def get_welcome_message(browser):
+def get_grade_info(browser):
+    output = []
+    tables = browser.find_by_css(".info_tbl")
+    for table in tables:
+        titles_array = table.find_by_css(".row_subhdr")[0].find_by_css("*")
+        titles = []
+        for title in titles_array:
+            titles.append(str(title.text).strip())
+
+        classes_array = table.find_by_css(".altrow1,.altrow2")
+        for clazz in classes_array:
+            clazzObj = {}
+            children = clazz.find_by_tag("td")
+            for i in range(0, len(children)):
+                clazzObj[titles[i]] = str(children[i].text).strip()
+            output.append(clazzObj)
+
+    #Merger
+    markForDeletion = []
+    for i in range(0, len(output)):
+        firstClass = output[i]
+        for i2 in range(i+1, len(output)):
+            secondClass = output[i2]
+            if firstClass["Course Title"] == secondClass["Course Title"]:
+                for key in dict.keys(firstClass):
+                    if str(key).isupper() and secondClass[key] == "N/A (0)":
+                        secondClass[key] = firstClass[key]
+                markForDeletion.append(i)
+    for delete in markForDeletion:
+        output.pop(delete)
+
+    return output
+
+
+def get_table_headers(browser):
+    get_grade_info(browser)
+
     u = None
     array = browser.find_by_css(".row_subhdr")
     if len(array) > 1:
@@ -54,10 +90,12 @@ def get_table_body(browser):
                 tableBody += ("<td>" + child.text + "</td>")
         else:
             tableBody += ("<td>" + children[0].text + "</td>")
-            tableBody += "<td>N/A</td>"
             tableBody += ("<td>" + children[1].text + "</td>")
             tableBody += ("<td>" + children[2].text + "</td>")
             tableBody += ("<td>" + children[3].text + "</td>")
             tableBody += ("<td>" + children[4].text + "</td>")
+
+
+
     tableBody += "<tr>"
     return tableBody
