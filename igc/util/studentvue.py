@@ -66,36 +66,31 @@ def get_grade_info(browser):
     return output
 
 
-def get_table_headers(browser):
-    get_grade_info(browser)
+def get_table_headers(outputs):
+    table_header =  \
+    """
+    <td align="left" style="width:5%;">Period</td>
+    <td align="left">Course Title</td>
+    <td align="left">Room Name</td>
+    <td align="left">Teacher</td>
+    """
 
-    u = None
-    array = browser.find_by_css(".row_subhdr")
-    if len(array) > 1:
-        u = array[len(array) - 1]
-    else:
-        u = array.first
-    return u.html.replace('<td align="left" valign="top">Resources</td>', "")
+    for key in dict.keys(outputs[0]):
+        if str(key).isupper():
+            table_header += ("<td align='left' style='width:10%;'>" + key + "</td>")
+    return table_header
 
-
-def get_table_body(browser):
+def get_table_body(outputs):
     tableBody = ""
-    list = browser.find_by_css(".altrow1,.altrow2")
-    for clazz in list:
-        children = clazz.find_by_tag("a")
+    for clazz in outputs:
         tableBody += "<tr>"
+        tableBody += ("<td>" + clazz["Period"] + "</td>")
+        tableBody += ("<td>" + clazz["Course Title"] + "</td>")
+        tableBody += ("<td>" + clazz["Room Name"] + "</td>")
+        tableBody += ("<td>" + clazz["Teacher"] + "</td>")
 
-        if len(children) == 6:
-            for child in children:
-                tableBody += ("<td>" + child.text + "</td>")
-        else:
-            tableBody += ("<td>" + children[0].text + "</td>")
-            tableBody += ("<td>" + children[1].text + "</td>")
-            tableBody += ("<td>" + children[2].text + "</td>")
-            tableBody += ("<td>" + children[3].text + "</td>")
-            tableBody += ("<td>" + children[4].text + "</td>")
-
-
-
-    tableBody += "<tr>"
+        for key in dict.keys(clazz):
+            if str(key).isupper():
+                tableBody += ("<td>" + clazz[key] + "</td>")
+        tableBody += "</tr>"
     return tableBody

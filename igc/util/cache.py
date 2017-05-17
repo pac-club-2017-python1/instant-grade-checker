@@ -52,8 +52,9 @@ def cacheStudentData(studentId, student):
     browser = studentvue.get_browser_authenticated(studentId, password)
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
     full_name = studentvue.get_full_name(browser)
-    table_headers = studentvue.get_table_headers(browser)
-    table_body = studentvue.get_table_body(browser)
+    outputs = studentvue.get_grade_info(browser)
+    table_headers = studentvue.get_table_headers(outputs)
+    table_body = studentvue.get_table_body(outputs)
     browser.quit()
 
     lock.acquire()
