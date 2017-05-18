@@ -25,8 +25,8 @@ def get_browser_authenticated(studentId, password):
     if isCorrect and browser is not None:
         return browser
     else:
-        raise AssertionError("Invalid user credentials")
-
+        print "Invalid user credentials for: " + str(studentId)
+        return None
 
 def get_full_name(browser):
     return browser.find_by_css('.UserHead').find_by_css("*").first.text.title()

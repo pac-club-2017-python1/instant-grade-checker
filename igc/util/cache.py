@@ -50,6 +50,11 @@ def cacheStudentData(studentId, student):
 
     print("Caching for student id: " + str(studentId) + " on thread: " +  str(threading.current_thread()))
     browser = studentvue.get_browser_authenticated(studentId, password)
+
+    if not browser:
+        _students.pop(int(studentId))
+        return
+
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
     full_name = studentvue.get_full_name(browser)
     outputs = studentvue.get_grade_info(browser)
@@ -83,7 +88,7 @@ class CacheThread(threading.Thread):
                     student = getStudent(studentId, False)
                     lastUpdated = student["lastUpdated"]
                     currentTime = int(time.time())
-                    shouldUpdate = (currentTime - lastUpdated) > 60*60
+                    shouldUpdate = (currentTime - lastUpdated) > (60*30)
                     if shouldUpdate:
                         updateArray.append({"studentId" : studentId, "student" : student})
             finally:
