@@ -38,14 +38,22 @@ def controller(app, models, db):
                         if exists:
                             return 'This user already has an account. Do you want to <a href="../index.html">log in?</a>'
                         else:
-                            user = User(int(studentId), hash, salt)
+                            tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
+                            tokengen = studentId + "_" + tokengen
+                            user = User(int(studentId), hash, salt, token=tokengen)
                             if cache.ALLOW_PIN_CACHE:
                                 user.pid = base64.urlsafe_b64encode(pin)
                             session.add(user)
                             session.flush()
 
-                            cache.addStudent(int(studentId), password)
-                            return "OK"
+                            student = cache.addStudent(int(studentId), password)
+                            if student:
+                                cache.cacheStudentData(int(studentId), student)
+                                response = "OK;" + tokengen
+                                user_keys[int(studentId)] = password
+                                return response
+                            else:
+                                return "This user already has an account but database has been desynced. Contact your administrator"
                 else:
                     return "Invalid Student ID/PIN combination"
             except ValueError:

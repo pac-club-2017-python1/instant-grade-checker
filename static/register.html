@@ -144,8 +144,7 @@
                         <h1 class="text-center"> Finished</h1>
                         <p>Thank you for registering for this application! You may add a fingerprint once you log in to your account.</p>
 
-                        <button class="btn btn-secondary btn-lg"><a href="../login.html">Login</a></button>
-                        <button class="btn btn-secondary btn-lg"><a href="../index.html">Return to home page</a></button>
+                        <button class="btn btn-secondary btn-lg" id="finishButton">Finish</button>
                     </div>
                 </div>
             </div>
@@ -161,6 +160,8 @@
 
 <script>
     $(document).ready(function () {
+        var token = "";
+
         var navListItems = $('ul.setup-panel li a'),
             allWells = $('.setup-content');
 
@@ -212,7 +213,8 @@
 
                 toastr.info('This may take up to a minute', 'Processing');
                 $.post("http://127.0.0.1:5000/api/register", { studentId: studentId, password: password, pin: pin}, function( data ) {
-                    if(data === "OK"){
+                    if(data.toString().startsWith("OK")){
+                        token = data.toString().split(";")[1];
                         $("#student-id").removeClass("error");
                         $("#pin").removeClass("error");
                         $("#password").removeClass("error");
@@ -245,6 +247,12 @@
             $('ul.setup-panel li:eq(2)').removeClass('disabled');
             $('ul.setup-panel li a[href="#step-3"]').trigger('click');
             $(this).remove();
+        });
+
+        $('#finishButton').on('click', function (e){
+            e.preventDefault();
+            console.log("Using token: " + token);
+            document.location = "dashboard.html?token=" + token;
         });
     });
 </script>

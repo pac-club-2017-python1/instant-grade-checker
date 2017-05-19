@@ -10,6 +10,7 @@ _students = {}
 ALLOW_PIN_CACHE = True
 
 def initalizeCache():
+    from igc.controller import auth_controller
     if ALLOW_PIN_CACHE:
         User = util.models["user"]
         with session_scope(util.db) as session:
@@ -20,6 +21,7 @@ def initalizeCache():
                     fernet = crypto.get_fernet_with_key(key)
                     success, password = crypto.login(fernet, user.hash)
                     if success:
+                        auth_controller.user_keys[int(user.student_id)] = password
                         _students[user.student_id] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
 
 def addStudent(studentId, password):
@@ -29,8 +31,10 @@ def addStudent(studentId, password):
             raise AssertionError("Student ID must be int")
         if not _students.has_key(studentId):
             _students[studentId] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
+        return _students[studentId]
     finally:
         lock.release()
+    return None
 
 def getStudent(studentId, lockMethod=True):
     if lockMethod:
@@ -96,5 +100,4 @@ class CacheThread(threading.Thread):
 
             for studentObj in updateArray:
                 cacheStudentData(studentObj["studentId"], studentObj["student"])
-                time.sleep(2)
             time.sleep(10)
