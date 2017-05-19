@@ -3,5 +3,5 @@
 sh ./_clearDatabase.sh
 python ./_clearFingerprints.py
 javac ./bootloader/src/IGC.java
-mv ./bootloader/src/IGC.class ./Bootloader.class
+mv ./bootloader/src/IGC.class ./IGC.class
 echo "Initalization complete"
