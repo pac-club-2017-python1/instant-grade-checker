@@ -56,7 +56,7 @@ def cacheStudentData(studentId, student):
     browser = studentvue.get_browser_authenticated(studentId, password)
 
     if not browser:
-        _students.pop(int(studentId))
+        # _students.pop(int(studentIdk))
         return
 
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
