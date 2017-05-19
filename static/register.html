@@ -128,19 +128,9 @@
                     <div class="col-md-12 well text-center">
                         <h1 class="text-center"> User Agreement</h1>
 
-                        <textarea class="form-control" rows="10" disabled>
-                            This product is experimental, and may break without notice.
-                            More legal stuff...
-                        </textarea>
+                        <iframe src="https://docs.google.com/document/d/1Ef_MU8dJ1Sj9PLqT8BF7sAtggB2BeeAY09kKurshhCI/pub?embedded=true" style="width: 90%; height: 40%;"></iframe>
 
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" value="" id="agreement">
-                                I have read and agree to this agreement
-                            </label>
-                        </div>
-
-                        <button id="activate-step-3" class="btn btn-primary btn-lg">Next</button>
+                        <button id="activate-step-3" class="btn btn-primary btn-lg">Agree and Next</button>
                     </div>
                 </div>
             </div>
@@ -251,15 +241,10 @@
 
         $('#activate-step-3').on('click', function (e) {
             e.preventDefault();
-            if ($("#agreement").is(":checked")) {
-                $("#agreement").attr("disabled", "disabled");
-                $("#step-3").css('visibility', 'visible');
-                $('ul.setup-panel li:eq(2)').removeClass('disabled');
-                $('ul.setup-panel li a[href="#step-3"]').trigger('click');
-                $(this).remove();
-            } else {
-                toastr.error('Please agree to the user agreement', 'Error')
-            }
+            $("#step-3").css('visibility', 'visible');
+            $('ul.setup-panel li:eq(2)').removeClass('disabled');
+            $('ul.setup-panel li a[href="#step-3"]').trigger('click');
+            $(this).remove();
         });
     });
 </script>
