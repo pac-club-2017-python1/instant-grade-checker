@@ -9,7 +9,8 @@ from igc.util.cache import getStudent, cacheStudentData
 
 def controller(app, models, db):
 
-    template = """
+    template = \
+    """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -32,7 +33,7 @@ def controller(app, models, db):
         <!-- Bootstrap core CSS -->
         <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="css/responsive_table.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
         <link href="css/custom.css" rel="stylesheet">
     </head>
     
