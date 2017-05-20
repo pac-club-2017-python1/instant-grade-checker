@@ -93,7 +93,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="student-id">Student ID:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" maxlength="6" class="form-control" id="student-id"
+                                    <input type="tel" maxlength="6" class="form-control" id="student-id"
                                            placeholder="######" autocomplete="off">
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-2" for="pin">PIN:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" maxlength="6" class="form-control" id="pin" placeholder="######" autocomplete="off">
+                                    <input type="tel" maxlength="6" class="form-control" id="pin" placeholder="######" autocomplete="off">
                                 </div>
                             </div>
                             <hr>
@@ -210,6 +210,7 @@
             if(canContinue){
                 $("#processingSpinner").css('visibility', 'visible');
                 $("#processingSpinner").css('display', 'inline-block');
+                $("#backButton").css('visibility', 'hidden');
 
                 toastr.info('This may take up to a minute', 'Processing');
                 $.post("http://127.0.0.1:5000/api/register", { studentId: studentId, password: password, pin: pin}, function( data ) {
@@ -233,6 +234,7 @@
                         $("#processingSpinner").css('display', 'none');
                         $("#password").addClass("error");
                         $("#student-id").addClass("error");
+                        $("#backButton").css('visibility', 'visible');
                         toastr.error(data, 'Incorrect values')
                     }
                 });
