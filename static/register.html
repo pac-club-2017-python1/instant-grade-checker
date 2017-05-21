@@ -293,7 +293,7 @@
         $('#activate-step-4').on('click', function (e) {
             e.preventDefault();
             var checked = $('#waiver').prop('checked');
-            $.get("http://127.0.0.1:5000/api/allowFingerprintStatus?allowFingerprint=" + checked, function( data ) {
+            $.get("http://127.0.0.1:5000/api/allowFingerprintStatus?token=" + token + "&allowFingerprint=" + checked, function( data ) {
                 if(data !== "OK"){
                     toastr.error(data, "Message");
                 }else{
