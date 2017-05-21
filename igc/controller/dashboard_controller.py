@@ -162,9 +162,7 @@ def controller(app, models, db):
         token = request.args.get('token')
         with session_scope(db) as session:
             user = session.query(User).filter(User.token == token).first()
-            allowFingerprint = request.args.get('allowFingerprint')
-            if user and allowFingerprint:
-                user.allowFingerprint = bool(allowFingerprint)
+            if user:
                 from igc.controller.biometrics import scanner
                 success, fid = scanner.enroll()
                 print success, fid
@@ -174,7 +172,7 @@ def controller(app, models, db):
                 else:
                     return "Error: Please try again"
             else:
-                return "Error: Waiver not agreed to or authentication problem"
+                return "Error: Authentication problem"
 
     @app.route("/api/allowFingerprintStatus")
     def fingerprint_status():
