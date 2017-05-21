@@ -47,7 +47,7 @@ def controller(app, models, db):
     </div>
     
     <div class="container">
-        <div class="row" style='padding-bottom: 10px'>
+        <div class="row" style='padding-bottom: 10px; visibility: {allow_fingerprint}'>
             <button id="recordFingerprint" class="btn btn-success btn-lg">Record/Update your Fingerprint</button>
         </div>
         
@@ -82,7 +82,7 @@ def controller(app, models, db):
           </div>
           <div class="modal-body">
             <p>Press your finger on the scanner, and hold until the scanner light turns off.</p>
-            <button id="startFingerprint" class="btn btn-success btn-lg">Start</button>
+            <button id="startFingerprint" class="btn btn-success">Start</button>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -150,18 +150,22 @@ def controller(app, models, db):
                 string = string.replace("{full_name}", cache["full_name"])
                 string = string.replace("{table_headers}", cache["table_headers"])
                 string = string.replace("{table_body}", cache["table_body"])
+                string = string.replace("{allow_fingerprint}", "visible;" if user.allowFingerprint else "hidden;display: none;")
                 return string
             else:
                 return redirect("index.html#login", code=302)
 
+
     @app.route("/api/enrollFp")
     def enroll_fingerprint():
-        from igc.controller.biometrics import scanner
         User = models["user"]
         token = request.args.get('token')
         with session_scope(db) as session:
             user = session.query(User).filter(User.token == token).first()
-            if user:
+            allowFingerprint = request.args.get('allowFingerprint')
+            if user and allowFingerprint:
+                user.allowFingerprint = bool(allowFingerprint)
+                from igc.controller.biometrics import scanner
                 success, fid = scanner.enroll()
                 print success, fid
                 if success:
@@ -170,12 +174,25 @@ def controller(app, models, db):
                 else:
                     return "Error: Please try again"
             else:
+                return "Error: Waiver not agreed to or authentication problem"
+
+    @app.route("/api/allowFingerprintStatus")
+    def fingerprint_status():
+        User = models["user"]
+        token = request.args.get('token')
+        with session_scope(db) as session:
+            user = session.query(User).filter(User.token == token).first()
+            allowFingerprint = request.args.get('allowFingerprint')
+            if user and allowFingerprint:
+                user.allowFingerprint = allowFingerprint
+                return "OK"
+            else:
                 return "Error: Authentication problem"
+
 
     @app.route("/api/identifyFp")
     def identify_fingerprint():
         from igc.controller.biometrics import scanner
-
         User = models["user"]
         with session_scope(db) as session:
             success, target = scanner.identify()

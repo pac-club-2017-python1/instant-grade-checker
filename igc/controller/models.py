@@ -14,8 +14,9 @@ def create_sql_alchemy(app):
         fid = db.Column(db.Integer)
         pid = db.Column(db.String(120))
         times = db.Column(db.Integer)
+        allowFingerprint = db.Column(db.Boolean)
 
-        def __init__(self, student_id, hash, salt, token=None, fid=-100, pid="NULL", times=0):
+        def __init__(self, student_id, hash, salt, token=None, fid=-100, pid="NULL", times=0, allowFingerprint=False):
             self.student_id = student_id
             self.hash = hash
             self.salt = salt
@@ -23,6 +24,7 @@ def create_sql_alchemy(app):
             self.fid = fid
             self.pid = pid
             self.times = times
+            self.allowFingerprint = allowFingerprint
 
     db.create_all()
     return db, User
