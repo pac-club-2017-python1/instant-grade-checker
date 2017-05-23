@@ -292,6 +292,10 @@
 
         $('#activate-step-4').on('click', function (e) {
             e.preventDefault();
+            step4();
+        });
+
+        function step4(){
             var checked = $('#waiver').prop('checked');
             $.get("http://127.0.0.1:5000/api/allowFingerprintStatus?token=" + token + "&allowFingerprint=" + checked, function( data ) {
                 if(data !== "OK"){
@@ -303,7 +307,8 @@
                     $(this).remove();
                 }
             });
-        });
+        }
+
 
         $('#finishButton').on('click', function (e){
             e.preventDefault();
@@ -330,6 +335,7 @@
                     toastr.error(data, "Message");
                 }else{
                     toastr.success("Successfully enrolled fingerprint", "Success");
+                    step4();
                 }
             });
         });
