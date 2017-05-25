@@ -1,3 +1,4 @@
+import re
 from splinter import Browser
 
 
@@ -94,3 +95,12 @@ def get_table_body(outputs):
                 tableBody += ("<td>" + clazz[key] + "</td>")
         tableBody += "</tr>"
     return tableBody
+
+
+def get_class_schedule(browser):
+    table = browser.find_by_css(".info_tbl").first
+    html = table.html.strip()
+    regex = r"href=([\"'])(?:(?=(\\?))\2.)*?\1"
+    html = re.sub(regex, "", html)
+    html = html.replace("""<img class="mail" src="images/PXP/mail.gif" alt="click to send email">""", "")
+    return html

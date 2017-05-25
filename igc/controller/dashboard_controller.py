@@ -37,25 +37,29 @@ def controller(app, models, db):
         <link href="css/custom.css" rel="stylesheet">
     </head>
     
-    <body>
+    <body onhashchange="onhashchange();">
+    
+    <!--
     <div class="jumbotron">
         <div class="container">
             <h1 class="display-3">Dashboard</h1>
             <p>{full_name}</p>
-            <button id="logout" class="btn btn-danger btn-lg">Logout</button>
         </div>
     </div>
+    -->
     
     <div class="container">
         <div class="row" style='padding-bottom: 10px; visibility: {allow_fingerprint}'>
+            <button id="logout" class="btn btn-danger btn-lg">Logout</button>
             <button id="recordFingerprint" class="btn btn-success btn-lg">Record/Update your Fingerprint</button>
         </div>
         
         <div class="row">
             <ul class="nav nav-tabs">
-              <li role="presentation" class="active"><a href="#">Grades</a></li>
+              <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
+              <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
             </ul>
-            <div class="panel panel-default">
+            <div class="panel panel-default" id="panel-grades" style="visibility: hidden;">
               <table class="table table-hover table-mc-light-blue">
                     <thead>
                         {table_headers}
@@ -63,6 +67,11 @@ def controller(app, models, db):
                     <tbody>
                         {table_body}
                     </tbody>
+                </table>
+            </div>
+            <div class="panel panel-default" id="panel-class_schedule" style="visibility: hidden;">
+              <table class="table table-hover table-mc-light-blue">
+                    {class_schedule}
                 </table>
             </div>
         </div>  
@@ -100,6 +109,29 @@ def controller(app, models, db):
     <link href="../../static/bower_components/toastr/toastr.min.css" rel="stylesheet">
     <script src="../../static/bower_components/toastr/toastr.min.js"></script>
     <script>
+        $(document).ready(function(e){
+            if(location.hash.trim() === ""){
+                location.hash = "grades";
+            }
+        });
+        
+        function onhashchange(){
+            $(".links").each(function(){
+                panel = this.id.split("-")[1];
+                console.log(panel);
+                
+                if(location.hash.replace("#", "").trim() === panel){
+                    $("#panel-" + panel).css('visibility', 'visible');
+                    $("#panel-" + panel).css('display', 'block');
+                    $("#tab-" + panel).addClass("active");
+                }else{
+                    $("#panel-" + panel).css('visibility', 'hidden');
+                    $("#panel-" + panel).css('display', 'none');
+                    $("#tab-" + panel).removeClass("active");
+                }
+            });
+        }
+        
         $("#logout").click(function(e){
             window.location = "/index.html?token=logout#logout";
         });
@@ -150,6 +182,7 @@ def controller(app, models, db):
                 string = string.replace("{full_name}", cache["full_name"])
                 string = string.replace("{table_headers}", cache["table_headers"])
                 string = string.replace("{table_body}", cache["table_body"])
+                string = string.replace("{class_schedule}", cache["class_schedule"])
                 string = string.replace("{allow_fingerprint}", "visible;" if user.allowFingerprint else "hidden;display: none;")
                 return string
             else:

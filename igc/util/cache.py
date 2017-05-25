@@ -64,6 +64,8 @@ def cacheStudentData(studentId, student):
     outputs = studentvue.get_grade_info(browser)
     table_headers = studentvue.get_table_headers(outputs)
     table_body = studentvue.get_table_body(outputs)
+    browser.click_link_by_partial_href('PXP_ClassSchedule.aspx?AGU=0')
+    class_schedule = studentvue.get_class_schedule(browser)
     browser.quit()
 
     lock.acquire()
@@ -71,6 +73,7 @@ def cacheStudentData(studentId, student):
         student["full_name"] = full_name
         student["table_headers"] = table_headers
         student["table_body"] = table_body
+        student["class_schedule"] = class_schedule
         student["lastUpdated"] = int(time.time())
         print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread()))
     finally:
