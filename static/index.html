@@ -17,12 +17,6 @@
 </head>
 
 <body>
-<!--<div class="jumbotron">-->
-    <!--<div class="container">-->
-        <!--<h1 class="display-3">Instant Grade Checker</h1>-->
-        <!--<p>Connected to Virginia Beach City Public Schools - Please log in with fingerprint or pin.</p>-->
-    <!--</div>-->
-<!--</div>-->
 
 <div class="container">
     <div class="row">
@@ -57,7 +51,7 @@
                 <p>Press your finger on the scanner, and hold until the scanner light turns off.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -80,6 +74,10 @@
             toastr.info("Log in to your account to access this page", "Login");
             location.hash = "";
         }
+        if(reason === "#loginAgain"){
+            toastr.info("Password successfully changed", "Login");
+            location.hash = "";
+        }
     });
 
     $("#loginWithFingerprint").click(function(e){
@@ -90,6 +88,8 @@
                 var token = data.split(";")[1];
                 localStorage.setItem("token", token);
                 document.location = "dashboard.html?token=" + token;
+            }else if(data.startsWith("Change")){
+                document.location = "changePassword.html";
             }else{
                 toastr.error(data, "Error")
             }

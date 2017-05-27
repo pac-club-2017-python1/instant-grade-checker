@@ -1,9 +1,9 @@
 import base64
 import random
 
-from flask import request
+from flask import request, redirect
 
-from igc.util import cache
+from igc.util import cache, studentvue
 from igc.util import crypto
 from igc.util.studentvue import check_authentication
 from igc.util.util import session_scope
@@ -61,6 +61,39 @@ def controller(app, models, db):
         else:
             return "Invalid PIN"
 
+    @app.route("/api/updatePassword", methods=['POST'])
+    def updatePassword():
+        json = request.form
+        studentId = json["studentId"]
+        password = json["password"]
+        pin = json["pin"]
+
+        User = models["user"]
+        with session_scope(db) as session:
+            user = session.query(User).filter(User.student_id == studentId).first()
+            if user:
+                key = crypto.generate_fernet_key(pin, user.salt)
+                fernet = crypto.get_fernet_with_key(key)
+                success, oldPassword = crypto.login(fernet, user.hash)
+                if success:
+                    isCorrect, browser = studentvue.check_authentication(studentId, password)
+                    browser.quit()
+                    if isCorrect:
+                        encryptFernet = crypto.get_fernet_with_key(key)
+                        hash = encryptFernet.encrypt(bytes(password))
+                        user.hash = hash
+                        user.needsUpdate = False
+
+                        cache.addStudent(int(studentId), password, force=True)
+                        user_keys[int(studentId)] = password
+                        return "OK"
+                    else:
+                        return "Password is invalid"
+                else:
+                    return "PIN is invalid"
+            else:
+                return "User does not exist"
+
     @app.route("/api/login", methods=['POST'])
     def login():
         User = models["user"]
@@ -71,6 +104,9 @@ def controller(app, models, db):
 
         with session_scope(db) as session:
             user = session.query(User).filter(User.student_id == studentId).first()
+            if user.needsUpdate:
+                return "Change;"
+
             if user and len(pin) == 6:
                 key = crypto.generate_fernet_key(pin, user.salt)
                 fernet = crypto.get_fernet_with_key(key)

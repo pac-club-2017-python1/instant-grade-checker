@@ -77,7 +77,7 @@ def controller(app, models, db):
         </div>  
         <hr>
         <footer>
-            <p>&copy; VBCPS 2017</p>
+            <p>&copy; Yoland Gao, Dylan Win, Tanmay Parakala-Jain, Chris Giroud 2017</p>
         </footer>
     </div> <!-- /container -->
     
@@ -91,10 +91,11 @@ def controller(app, models, db):
           </div>
           <div class="modal-body">
             <p>Press your finger on the scanner, and hold until the scanner light turns off.</p>
-            <button id="startFingerprint" class="btn btn-success">Start</button>
+            <hr>
+            <button id="startFingerprint" class="btn btn-success btn-lg">Start</button>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -176,7 +177,10 @@ def controller(app, models, db):
                 string = template
 
                 if getStudent(user.student_id)["table_body"] is None:
-                    cacheStudentData(user.student_id, getStudent(user.student_id))
+                    confirmedIncorrect = cacheStudentData(user.student_id, getStudent(user.student_id))
+                    if confirmedIncorrect:
+                        return redirect("changePassword.html", code=302)
+
 
                 cache = getStudent(user.student_id)
                 string = string.replace("{full_name}", cache["full_name"])
@@ -214,6 +218,10 @@ def controller(app, models, db):
         with session_scope(db) as session:
             user = session.query(User).filter(User.token == token).first()
             allowFingerprint = request.args.get('allowFingerprint')
+
+            #For purposes of our demonstration/pilot program, allow all
+            allowFingerprint = True
+
             if user and allowFingerprint:
                 user.allowFingerprint = allowFingerprint
                 return "OK"
@@ -229,6 +237,9 @@ def controller(app, models, db):
             success, target = scanner.identify()
             if success:
                 user = session.query(User).filter(User.fid == target).first()
+                if user.needsUpdate:
+                    return "Change;"
+
                 if user and int(user.student_id) in auth_controller.user_keys:
                     tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
                     tokengen = str(user.student_id) + "_" + tokengen

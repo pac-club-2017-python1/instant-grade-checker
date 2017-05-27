@@ -16,7 +16,7 @@ def initalizeCache():
         with session_scope(util.db) as session:
             users = session.query(User).all()
             for user in users:
-                if user.pid != "NULL":
+                if user.pid != "NULL" and not user.needsUpdate:
                     key = crypto.generate_fernet_key(base64.urlsafe_b64decode(str(user.pid)), user.salt)
                     fernet = crypto.get_fernet_with_key(key)
                     success, password = crypto.login(fernet, user.hash)
@@ -24,17 +24,16 @@ def initalizeCache():
                         auth_controller.user_keys[int(user.student_id)] = password
                         _students[user.student_id] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
 
-def addStudent(studentId, password):
+def addStudent(studentId, password, force=False):
     lock.acquire()
     try:
         if type(studentId) is not int:
             raise AssertionError("Student ID must be int")
-        if not _students.has_key(studentId):
+        if not _students.has_key(studentId) or force:
             _students[studentId] = {"password": password, "lastUpdated": 0, "table_body": None, "full_name": None, "welcome_message": None}
         return _students[studentId]
     finally:
         lock.release()
-    return None
 
 def getStudent(studentId, lockMethod=True):
     if lockMethod:
@@ -53,11 +52,13 @@ def cacheStudentData(studentId, student):
         lock.release()
 
     print("Caching for student id: " + str(studentId) + " on thread: " +  str(threading.current_thread()))
-    browser = studentvue.get_browser_authenticated(studentId, password)
+    browser, confirmedIncorrect = studentvue.get_browser_authenticated(studentId, password)
 
-    if not browser:
-        # _students.pop(int(studentIdk))
-        return
+    if confirmedIncorrect:
+        _students.pop(int(studentId))
+        from igc.controller import auth_controller
+        auth_controller.user_keys.pop(int(studentId))
+        return confirmedIncorrect
 
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
     full_name = studentvue.get_full_name(browser)
@@ -78,7 +79,7 @@ def cacheStudentData(studentId, student):
         print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread()))
     finally:
         lock.release()
-
+        return confirmedIncorrect
 
 class CacheThread(threading.Thread):
 

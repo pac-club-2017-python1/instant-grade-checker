@@ -1,6 +1,9 @@
 import re
 from splinter import Browser
 
+from igc.util import util
+from igc.util.util import session_scope
+
 
 def check_authentication(studentId, password):
     browser  = Browser('phantomjs')
@@ -18,16 +21,25 @@ def check_authentication(studentId, password):
     if browser.url == 'https://parentvue.vbcps.com/Home_PXP.aspx':
         return True, browser
     else:
+        User = util.models["user"]
+        with session_scope(util.db) as session:
+            user = session.query(User).filter(User.student_id == studentId).first()
+            if user:
+                user.needsUpdate = True
+
         return False, browser
 
 
 def get_browser_authenticated(studentId, password):
     isCorrect, browser = check_authentication(studentId, password)
-    if isCorrect and browser is not None:
-        return browser
-    else:
+
+    if isCorrect == False and browser is not None:
         print "Invalid user credentials for: " + str(studentId)
-        return None
+        return None, True
+    elif isCorrect and browser is not None:
+        return browser, False
+    else:
+        return None, False
 
 def get_full_name(browser):
     return browser.find_by_css('.UserHead').find_by_css("*").first.text.title()
