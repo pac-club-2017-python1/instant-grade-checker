@@ -4,9 +4,13 @@ from splinter import Browser
 from igc.util import util
 from igc.util.util import session_scope
 
+service_args = [
+    '--proxy=127.0.0.1:1080',
+    '--proxy-type=socks5',
+]
 
 def check_authentication(studentId, password):
-    browser  = Browser('phantomjs')
+    browser  = Browser('phantomjs', service_args=service_args)
     url = 'https://parentvue.vbcps.com/Login_Student_PXP.aspx'
     browser.visit(url)
 
