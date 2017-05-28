@@ -35,6 +35,7 @@ def controller(app, models, db):
         <link href="css/responsive_table.css" rel="stylesheet">
         <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
         <link href="css/custom.css" rel="stylesheet">
+        <script src="startsWith.js"></script>
     </head>
     
     <body onhashchange="onhashchange();">
