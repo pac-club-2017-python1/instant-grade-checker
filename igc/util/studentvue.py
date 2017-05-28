@@ -3,11 +3,19 @@ from splinter import Browser
 
 from igc.util import util
 from igc.util.util import session_scope
+import signal
 
 service_args = [
     '--proxy=127.0.0.1:1080',
     '--proxy-type=socks5',
 ]
+
+def quit_browser(browser):
+    try:
+        browser.driver.service.process.send_signal(signal.SIGTERM)
+        browser.quit()
+    except OSError as e:
+        print "Ran into OSError: " + e.message
 
 def check_authentication(studentId, password):
     browser  = Browser('phantomjs', service_args=service_args)

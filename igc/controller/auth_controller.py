@@ -24,7 +24,7 @@ def controller(app, models, db):
         isCorrect, browser = check_authentication(studentId, password)
         if browser is None:
             return "Server connection error"
-        browser.quit()
+        studentvue.quit_browser(browser)
 
         if pin.isdigit():
             try:
@@ -77,7 +77,7 @@ def controller(app, models, db):
                 success, oldPassword = crypto.login(fernet, user.hash)
                 if success:
                     isCorrect, browser = studentvue.check_authentication(studentId, password)
-                    browser.quit()
+                    studentvue.quit_browser(browser)
                     if isCorrect:
                         encryptFernet = crypto.get_fernet_with_key(key)
                         hash = encryptFernet.encrypt(bytes(password))
