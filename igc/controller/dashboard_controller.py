@@ -50,15 +50,18 @@ def controller(app, models, db):
     -->
     
     <div class="container">
+        <div class="row">
+            <h3>{full_name}</h3>
+        </div>
         <div class="row" style='padding-bottom: 10px; visibility: {allow_fingerprint}'>
-            <button id="logout" class="btn btn-danger btn-lg">Logout</button>
-            <button id="recordFingerprint" class="btn btn-success btn-lg">Record/Update your Fingerprint</button>
         </div>
         
         <div class="row">
             <ul class="nav nav-tabs">
               <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
               <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
+              <li role="presentation" id="tab-fingerprint"><a href="#fingerprint" class="links" id="link-fingerprint">Account/Fingerprints</a></li>
+              <button id="logout" class="btn btn-danger pull-right">Logout</button>
             </ul>
             <div class="panel panel-default" id="panel-grades" style="visibility: hidden;">
               <table class="table table-hover table-mc-light-blue">
@@ -74,6 +77,12 @@ def controller(app, models, db):
               <table class="table table-hover table-mc-light-blue">
                     {class_schedule}
                 </table>
+            </div>
+            <div class="panel panel-default" id="panel-fingerprint" style="visibility: hidden;">
+                <div style="margin: 1em;">
+                    <h3>Record/Update your Fingerprint</h3>
+                    <button id="recordFingerprint" class="btn btn-success btn-lg">Start Recording</button>
+                </div>
             </div>
         </div>  
         <hr>
