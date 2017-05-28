@@ -71,7 +71,6 @@
             $.post("http://127.0.0.1:5000/api/login", {studentId: student_id, pin: pin}, function( data ) {
                 if(data.startsWith("OK")){
                     var token = data.split(";")[1];
-                    localStorage.setItem("token", token);
                     document.location = "dashboard.html?token=" + token;
                 }else if(data.startsWith("Change")){
                     document.location = "changePassword.html";
