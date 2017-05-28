@@ -104,10 +104,9 @@ def controller(app, models, db):
 
         with session_scope(db) as session:
             user = session.query(User).filter(User.student_id == studentId).first()
-            if user.needsUpdate:
-                return "Change;"
-
             if user and len(pin) == 6:
+                if user.needsUpdate:
+                    return "Change;"
                 key = crypto.generate_fernet_key(pin, user.salt)
                 fernet = crypto.get_fernet_with_key(key)
                 success, password = crypto.login(fernet, user.hash)

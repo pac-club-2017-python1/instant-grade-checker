@@ -237,16 +237,16 @@ def controller(app, models, db):
             success, target = scanner.identify()
             if success:
                 user = session.query(User).filter(User.fid == target).first()
-                if user.needsUpdate:
-                    return "Change;"
-
-                if user and int(user.student_id) in auth_controller.user_keys:
-                    tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
-                    tokengen = str(user.student_id) + "_" + tokengen
-                    user.token = tokengen
-                    user.times = user.times + 1
-                    return "OK;" + tokengen
-                else:
-                    return "Error: You must log in once manually with your PIN before using the scanner"
+                if user:
+                    if user.needsUpdate:
+                        return "Change;"
+                    if int(user.student_id) in auth_controller.user_keys:
+                        tokengen = ''.join(random.choice('0123456789ABCDEF') for i in range(16))
+                        tokengen = str(user.student_id) + "_" + tokengen
+                        user.token = tokengen
+                        user.times = user.times + 1
+                        return "OK;" + tokengen
+                    else:
+                        return "Error: You must log in once manually with your PIN before using the scanner"
             else:
                 return "Error: No fingerprint identified"
