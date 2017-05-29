@@ -67,7 +67,7 @@ def controller(app, models, db):
               <button id="logout" class="btn btn-danger pull-right">Logout</button>
             </ul>
             <div class="panel panel-default" id="panel-grades" style="visibility: hidden;">
-              <table class="table table-hover table-mc-light-blue">
+              <table class="table table-hover table-mc-light-blue" id="grade-table">
                     <thead>
                         {table_headers}
                     </thead>
@@ -77,7 +77,7 @@ def controller(app, models, db):
                 </table>
             </div>
             <div class="panel panel-default" id="panel-class_schedule" style="visibility: hidden;">
-              <table class="table table-hover table-mc-light-blue">
+              <table class="table table-hover table-mc-light-blue" id="schedule-table">
                     {class_schedule}
                 </table>
             </div>

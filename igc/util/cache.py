@@ -1,4 +1,6 @@
+import Queue
 import base64
+import collections
 import threading
 import time
 
@@ -47,6 +49,7 @@ def getStudent(studentId, lockMethod=True):
 def cacheStudentData(studentId, student):
     lock.acquire()
     try:
+        student["lastUpdated"] = int(time.time())
         password = student["password"]
     finally:
         lock.release()
@@ -75,21 +78,20 @@ def cacheStudentData(studentId, student):
         student["table_headers"] = table_headers
         student["table_body"] = table_body
         student["class_schedule"] = class_schedule
-        student["lastUpdated"] = int(time.time())
         print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread()))
     finally:
         lock.release()
         return confirmedIncorrect
 
-class CacheThread(threading.Thread):
 
+updateArray = Queue.Queue()
+class CacheSchedulerThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
     def run(self):
-        print("Cache started on thread: " + str(threading.current_thread()))
+        print("Cache scheduler started on thread: " + str(threading.current_thread()))
         while True:
-            updateArray = []
             try:
                 lock.acquire()
                 for studentId in _students:
@@ -98,10 +100,19 @@ class CacheThread(threading.Thread):
                     currentTime = int(time.time())
                     shouldUpdate = (currentTime - lastUpdated) > (60*30)
                     if shouldUpdate:
-                        updateArray.append({"studentId" : studentId, "student" : student})
+                        studentObj = {"studentId" : studentId, "student" : student}
+                        if studentObj not in updateArray.queue:
+                            updateArray.put(studentObj)
             finally:
                 lock.release()
+            time.sleep(0.1)
 
-            for studentObj in updateArray:
-                cacheStudentData(studentObj["studentId"], studentObj["student"])
-            time.sleep(10)
+class CacheThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        while True:
+            studentObj = updateArray.get()
+            cacheStudentData(studentObj["studentId"], studentObj["student"])
+            time.sleep(1)
