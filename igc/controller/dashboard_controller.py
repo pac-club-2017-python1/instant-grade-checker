@@ -39,6 +39,17 @@ def controller(app, models, db):
         <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
         <link href="css/custom.css" rel="stylesheet">
         <script src="startsWith.js"></script>
+        <style>
+            .noselect {
+              -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                   -moz-user-select: none; /* Firefox */
+                    -ms-user-select: none; /* Internet Explorer/Edge */
+                        user-select: none; /* Non-prefixed version, currently
+                                              supported by Chrome and Opera */
+            }
+        </style>
+        
     </head>
     
     <body onhashchange="onhashchange();" id="body">
@@ -52,14 +63,14 @@ def controller(app, models, db):
     </div>
     -->
     
-    <div class="container">
+    <div class="container noselect" id="body">
         <div class="row">
             <h3>{full_name}</h3>
         </div>
         <div class="row" style='padding-bottom: 10px; visibility: {allow_fingerprint}'>
         </div>
         
-        <div class="row">
+        <div class="row" id="body">
             <ul class="nav nav-tabs">
               <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
               <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
@@ -124,7 +135,32 @@ def controller(app, models, db):
         $(document).ready(function(e){
             if(location.hash.trim() === ""){
                 location.hash = "grades";
+            }else{
+                onhashchange();
             }
+            
+            $("#logout").click(function(e){
+                window.location = "/index.html?token=logout#logout";
+            });
+            
+            $("#recordFingerprint").click(function(e){
+                $("#fingerprintModal").modal('show');
+            });
+            
+            $("#startFingerprint").click(function(e){
+               $.get("http://127.0.0.1:5000/api/enrollFp?token=" + getParameterByName("token"), function( data ) {
+                  $("#fingerprintModal").modal('hide');
+                  if(data !== "OK"){
+                     toastr.error(data, "Message");
+                  }else{
+                     toastr.success("Successfully enrolled fingerprint", "Success");
+                  }
+               });
+            });
+            
+            $("#body").overscroll({
+                "showThumbs" : false
+            });
         });
         
         function onhashchange(){
@@ -140,33 +176,9 @@ def controller(app, models, db):
                     $("#panel-" + panel).css('visibility', 'hidden');
                     $("#panel-" + panel).css('display', 'none');
                     $("#tab-" + panel).removeClass("active");
-                }
-                
-                $("#body").removeOverscroll();
-                $("#body").overscroll({
-                    "showThumbs" : false
-                });
+                }                
             });
         }
-        
-        $("#logout").click(function(e){
-            window.location = "/index.html?token=logout#logout";
-        });
-        
-        $("#recordFingerprint").click(function(e){
-            $("#fingerprintModal").modal('show');
-        });
-        
-        $("#startFingerprint").click(function(e){
-           $.get("http://127.0.0.1:5000/api/enrollFp?token=" + getParameterByName("token"), function( data ) {
-              $("#fingerprintModal").modal('hide');
-              if(data !== "OK"){
-                 toastr.error(data, "Message");
-              }else{
-                 toastr.success("Successfully enrolled fingerprint", "Success");
-              }
-           });
-        });
     
         function getParameterByName(name, url) {
             if (!url) url = window.location.href;
