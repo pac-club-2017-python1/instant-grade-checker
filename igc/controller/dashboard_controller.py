@@ -34,7 +34,6 @@ def controller(app, models, db):
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="bower_components/jquery-overscroll/dist/jquery.overscroll.min.js"></script>
         <link href="css/responsive_table.css" rel="stylesheet">
         <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
         <link href="css/custom.css" rel="stylesheet">
@@ -52,7 +51,7 @@ def controller(app, models, db):
         
     </head>
     
-    <body onhashchange="onhashchange();" id="body">
+    <body onhashchange="onhashchange();">
     
     <!--
     <div class="jumbotron">
@@ -63,21 +62,19 @@ def controller(app, models, db):
     </div>
     -->
     
-    <div class="container noselect" id="body">
+    <div class="container noselect">
         <div class="row">
-            <h3>{full_name}</h3>
-        </div>
-        <div class="row" style='padding-bottom: 10px; visibility: {allow_fingerprint}'>
+            <h4>{full_name}</h4>
         </div>
         
-        <div class="row" id="body">
+        <div class="row">
             <ul class="nav nav-tabs">
               <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
               <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
               <li role="presentation" id="tab-fingerprint"><a href="#fingerprint" class="links" id="link-fingerprint">Account/Fingerprints</a></li>
               <button id="logout" class="btn btn-danger pull-right">Logout</button>
             </ul>
-            <div class="panel panel-default" id="panel-grades" style="visibility: hidden;">
+            <div class="panel panel-default" id="panel-grades" style="visibility: hidden; margin-bottom: 0;">
               <table class="table table-hover table-mc-light-blue" id="grade-table">
                     <thead>
                         {table_headers}
@@ -87,12 +84,12 @@ def controller(app, models, db):
                     </tbody>
                 </table>
             </div>
-            <div class="panel panel-default" id="panel-class_schedule" style="visibility: hidden;">
-              <table class="table table-hover table-mc-light-blue" id="schedule-table">
-                    {class_schedule}
+            <div class="panel panel-default" id="panel-class_schedule" style="visibility: hidden; margin-bottom: 0;">
+                <table class="table table-hover table-mc-light-blue" id="schedule-table">
+                      {class_schedule}
                 </table>
             </div>
-            <div class="panel panel-default" id="panel-fingerprint" style="visibility: hidden;">
+            <div class="panel panel-default" id="panel-fingerprint" style="visibility: hidden; margin-bottom: 0;">
                 <div style="margin: 1em;">
                     <h3>Record/Update your Fingerprint</h3>
                     <button id="recordFingerprint" class="btn btn-success btn-lg">Start Recording</button>
@@ -157,7 +154,6 @@ def controller(app, models, db):
                   }
                });
             });
-            updateBodyScrolling();
         });
         
         function onhashchange(){
@@ -174,13 +170,6 @@ def controller(app, models, db):
                     $("#panel-" + panel).css('display', 'none');
                     $("#tab-" + panel).removeClass("active");
                 }               
-                updateBodyScrolling();
-            });
-        }
-        
-        function updateBodyScrolling(){
-            $("#body").overscroll({
-                "showThumbs" : false
             });
         }
     

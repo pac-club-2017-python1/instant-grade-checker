@@ -68,8 +68,7 @@ def cacheStudentData(studentId, student):
     outputs = studentvue.get_grade_info(browser)
     table_headers = studentvue.get_table_headers(outputs)
     table_body = studentvue.get_table_body(outputs)
-    browser.click_link_by_partial_href('PXP_ClassSchedule.aspx?AGU=0')
-    class_schedule = studentvue.get_class_schedule(browser)
+    class_schedule = studentvue.get_class_schedule(outputs)
     studentvue.quit_browser(browser)
 
     lock.acquire()

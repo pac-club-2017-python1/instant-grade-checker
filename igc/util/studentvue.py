@@ -94,15 +94,13 @@ def get_grade_info(browser):
 def get_table_headers(outputs):
     table_header =  \
     """
-    <td align="left" style="width:5%;">Period</td>
+    <td align="left" style="width:3%;">Period</td>
     <td align="left">Course Title</td>
-    <td align="left">Room Name</td>
-    <td align="left">Teacher</td>
     """
 
     for key in dict.keys(outputs[0]):
         if str(key).isupper():
-            table_header += ("<td align='left' style='width:10%;'>" + key + "</td>")
+            table_header += ("<td align='left' style='width:13%;'>" + key + "</td>")
     return table_header
 
 def get_table_body(outputs):
@@ -110,9 +108,7 @@ def get_table_body(outputs):
     for clazz in outputs:
         tableBody += "<tr>"
         tableBody += ("<td>" + clazz["Period"] + "</td>")
-        tableBody += ("<td>" + clazz["Course Title"] + "</td>")
-        tableBody += ("<td>" + clazz["Room Name"] + "</td>")
-        tableBody += ("<td>" + clazz["Teacher"] + "</td>")
+        tableBody += ("<td>" + re.sub(r'\([^)]*\)', '', clazz["Course Title"]).strip() + "</td>")
 
         for key in dict.keys(clazz):
             if str(key).isupper():
@@ -121,10 +117,22 @@ def get_table_body(outputs):
     return tableBody
 
 
-def get_class_schedule(browser):
-    table = browser.find_by_css(".info_tbl").first
-    html = table.html.strip()
-    regex = r"href=([\"'])(?:(?=(\\?))\2.)*?\1"
-    html = re.sub(regex, "", html)
-    html = html.replace("""<img class="mail" src="images/PXP/mail.gif" alt="click to send email">""", "")
-    return html
+def get_class_schedule(outputs):
+    table_header = \
+    """
+    <td align="left" style="width:3%;">Period</td>
+    <td align="left">Course Title</td>
+    <td align="left" style="width:15%;">Room</td>
+    <td align="left" style="width:25%;">Teacher</td>
+    """
+    table_body = ""
+    for clazz in outputs:
+        table_body += "<tr>"
+        table_body += ("<td>" + clazz["Period"] + "</td>")
+        table_body += ("<td>" + re.sub(r'\([^)]*\)', '', clazz["Course Title"]).strip() + "</td>")
+        table_body += ("<td>" + clazz["Room Name"] + "</td>")
+        table_body += ("<td>" + clazz["Teacher"] + "</td>")
+        table_body += "</tr>"
+
+
+    return "<thead>" + table_header + "</thead><tbody>" + table_body + "</tbody>"
