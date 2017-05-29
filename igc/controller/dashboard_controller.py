@@ -139,10 +139,12 @@ def controller(app, models, db):
             });
             
             $("#startFingerprint").click(function(e){
+               $("#startFingerprint").prop("disabled",true);
                $.get("http://127.0.0.1:5000/api/enrollFp?token=" + getParameterByName("token"), function( data ) {
                   $("#fingerprintModal").modal('hide');
                   if(data !== "OK"){
                      toastr.error(data, "Message");
+                     $("#startFingerprint").prop("disabled",false);
                   }else{
                      toastr.success("Successfully enrolled fingerprint", "Success");
                   }
