@@ -67,7 +67,7 @@ def controller(app, models, db):
             <ul class="nav nav-tabs">
               <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
               <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
-              <li role="presentation" id="tab-fingerprint"><a href="#fingerprint" class="links" id="link-fingerprint">Account/Fingerprints</a></li>
+              <li role="presentation" id="tab-fingerprint"><a href="#fingerprint" class="links" id="link-fingerprint">Account</a></li>
               <li role="presentation"><a style="color: black;">{full_name}</a></li>
               <button id="logout" class="btn btn-danger pull-right">Logout</button>
             </ul>
