@@ -40,7 +40,7 @@
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-
+    <script src="bower_components/jquery-overscroll/dist/jquery.overscroll.min.js"></script>
 
     <script src="bower_components/bootstrap-validator/dist/validator.min.js"></script>
     <link href="bower_components/toastr/toastr.min.css" rel="stylesheet">
@@ -54,7 +54,7 @@
     <script src="startsWith.js"></script>
 </head>
 
-<body>
+<body id="body">
 <div class="container">
     <div class="row">
         <div class="container">
@@ -203,6 +203,10 @@
 
 <script>
     $(document).ready(function () {
+        $("#body").overscroll({
+            "showThumbs" : false
+        });
+
         var token = "";
 
         var navListItems = $('ul.setup-panel li a'),

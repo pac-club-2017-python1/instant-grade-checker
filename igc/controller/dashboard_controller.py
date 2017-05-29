@@ -31,14 +31,17 @@ def controller(app, models, db):
         <title>Student Information System</title>
     
         <!-- Bootstrap core CSS -->
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="bower_components/jquery-overscroll/dist/jquery.overscroll.min.js"></script>
         <link href="css/responsive_table.css" rel="stylesheet">
         <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
         <link href="css/custom.css" rel="stylesheet">
         <script src="startsWith.js"></script>
     </head>
     
-    <body onhashchange="onhashchange();">
+    <body onhashchange="onhashchange();" id="body">
     
     <!--
     <div class="jumbotron">
@@ -114,13 +117,16 @@ def controller(app, models, db):
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../../static/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="../../static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="../../static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
     <link href="../../static/bower_components/toastr/toastr.min.css" rel="stylesheet">
     <script src="../../static/bower_components/toastr/toastr.min.js"></script>
     <script>
         $(document).ready(function(e){
+            $("#body").overscroll({
+                "showThumbs" : false
+            });
+        
+        
             if(location.hash.trim() === ""){
                 location.hash = "grades";
             }
