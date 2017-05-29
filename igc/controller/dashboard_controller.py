@@ -122,11 +122,6 @@ def controller(app, models, db):
     <script src="../../static/bower_components/toastr/toastr.min.js"></script>
     <script>
         $(document).ready(function(e){
-            $("#body").overscroll({
-                "showThumbs" : false
-            });
-        
-        
             if(location.hash.trim() === ""){
                 location.hash = "grades";
             }
@@ -146,6 +141,11 @@ def controller(app, models, db):
                     $("#panel-" + panel).css('display', 'none');
                     $("#tab-" + panel).removeClass("active");
                 }
+                
+                $("#body").removeOverscroll();
+                $("#body").overscroll({
+                    "showThumbs" : false
+                });
             });
         }
         
