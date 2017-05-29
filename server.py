@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///./sqllite.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 register_controllers(app)
 cache.initalizeCache()
-for x in range(5):
+for x in range(3):
     print "Starting Cache Thread: " + str(x)
     thread = cache.CacheThread()
     thread.start()
