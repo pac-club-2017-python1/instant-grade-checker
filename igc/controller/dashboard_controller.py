@@ -4,185 +4,184 @@ from flask import redirect
 from flask import request
 
 from igc.controller import auth_controller
-from igc.util.util import session_scope
 from igc.util.cache import getStudent, cacheStudentData
+from igc.util.util import session_scope
+
 
 def controller(app, models, db):
-
     template = \
-    """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
+        """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <meta name="description" content="">
+            <meta name="author" content="">
+            
+            <!-- Disable caching -->
+            <meta http-equiv="cache-control" content="max-age=0" />
+            <meta http-equiv="cache-control" content="no-cache" />
+            <meta http-equiv="expires" content="0" />
+            <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+            <meta http-equiv="pragma" content="no-cache" />
+            
+            <link rel="icon" href="favicon.ico">
         
-        <!-- Disable caching -->
-        <meta http-equiv="cache-control" content="max-age=0" />
-        <meta http-equiv="cache-control" content="no-cache" />
-        <meta http-equiv="expires" content="0" />
-        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-        <meta http-equiv="pragma" content="no-cache" />
+            <title>Student Information System</title>
         
-        <link rel="icon" href="favicon.ico">
-    
-        <title>Student Information System</title>
-    
-        <!-- Bootstrap core CSS -->
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
-        <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-        <link href="css/responsive_table.css" rel="stylesheet">
-        <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
-        <link href="css/custom.css" rel="stylesheet">
-        <script src="startsWith.js"></script>
-        <style>
-            .noselect {
-              -webkit-touch-callout: none; /* iOS Safari */
-                -webkit-user-select: none; /* Safari */
-                   -moz-user-select: none; /* Firefox */
-                    -ms-user-select: none; /* Internet Explorer/Edge */
-                        user-select: none; /* Non-prefixed version, currently
-                                              supported by Chrome and Opera */
-            }
-        </style>
+            <!-- Bootstrap core CSS -->
+            <script src="bower_components/jquery/dist/jquery.min.js"></script>
+            <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+            <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+            <link href="css/responsive_table.css" rel="stylesheet">
+            <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
+            <link href="css/custom.css" rel="stylesheet">
+            <script src="startsWith.js"></script>
+            <style>
+                .noselect {
+                  -webkit-touch-callout: none; /* iOS Safari */
+                    -webkit-user-select: none; /* Safari */
+                       -moz-user-select: none; /* Firefox */
+                        -ms-user-select: none; /* Internet Explorer/Edge */
+                            user-select: none; /* Non-prefixed version, currently
+                                                  supported by Chrome and Opera */
+                }
+            </style>
+            
+        </head>
         
-    </head>
-    
-    <body onhashchange="onhashchange();">
-    
-    <!--
-    <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-3">Dashboard</h1>
-            <p>{full_name}</p>
+        <body onhashchange="onhashchange();">
+        
+        <!--
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="display-3">Dashboard</h1>
+                <p>{full_name}</p>
+            </div>
         </div>
-    </div>
-    -->
-    
-    <div class="container noselect" style="margin-top: 5px;"> 
-        <div class="row">
-            <ul class="nav nav-tabs">
-              <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
-              <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
-              <li role="presentation" id="tab-fingerprint"><a href="#fingerprint" class="links" id="link-fingerprint">Account</a></li>
-              <li role="presentation"><a style="color: black;">{full_name}</a></li>
-              <button id="logout" class="btn btn-danger pull-right">Logout</button>
-            </ul>
-            <div class="panel panel-default" id="panel-grades" style="visibility: hidden; margin-bottom: 0;">
-              <table class="table table-hover table-mc-light-blue" id="grade-table">
-                    <thead>
-                        {table_headers}
-                    </thead>
-                    <tbody>
-                        {table_body}
-                    </tbody>
-                </table>
-            </div>
-            <div class="panel panel-default" id="panel-class_schedule" style="visibility: hidden; margin-bottom: 0;">
-                <table class="table table-hover table-mc-light-blue" id="schedule-table">
-                      {class_schedule}
-                </table>
-            </div>
-            <div class="panel panel-default" id="panel-fingerprint" style="visibility: hidden; margin-bottom: 0;">
-                <div style="margin: 1em;">
-                    <h3>Record/Update your Fingerprint</h3>
-                    <button id="recordFingerprint" class="btn btn-success btn-lg">Start Recording</button>
-                </div>
-            </div>
-        </div>  
-        <hr>
-    </div> <!-- /container -->
-    
-    
-    <div class="modal fade" tabindex="-1" role="dialog" id="fingerprintModal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Record Fingerprint</h4>
-          </div>
-          <div class="modal-body">
-            <p>Press your finger on the scanner, and hold until the scanner light turns off.</p>
-            <hr>
-            <button id="startFingerprint" class="btn btn-success btn-lg">Start</button>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../../static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
-    <link href="../../static/bower_components/toastr/toastr.min.css" rel="stylesheet">
-    <script src="../../static/bower_components/toastr/toastr.min.js"></script>
-    <script>
-        $(document).ready(function(e){
-            if(location.hash.trim() === ""){
-                location.hash = "grades";
-            }else{
-                onhashchange();
-            }
-            
-            $("#logout").click(function(e){
-                window.location = "/index.html?token=logout#logout";
-            });
-            
-            $("#recordFingerprint").click(function(e){
-                $("#fingerprintModal").modal('show');
-            });
-            
-            $("#startFingerprint").click(function(e){
-               $("#startFingerprint").prop("disabled",true);
-               $.get("http://127.0.0.1:5000/api/enrollFp?token=" + getParameterByName("token"), function( data ) {
-                  $("#fingerprintModal").modal('hide');
-                  if(data !== "OK"){
-                     toastr.error(data, "Message");
-                     $("#startFingerprint").prop("disabled",false);
-                  }else{
-                     toastr.success("Successfully enrolled fingerprint", "Success");
-                  }
-               });
-            });
-        });
+        -->
         
-        function onhashchange(){
-            $(".links").each(function(){
-                panel = this.id.split("-")[1];
-                console.log(panel);
-                
-                if(location.hash.replace("#", "").trim() === panel){
-                    $("#panel-" + panel).css('visibility', 'visible');
-                    $("#panel-" + panel).css('display', 'block');
-                    $("#tab-" + panel).addClass("active");
+        <div class="container noselect" style="margin-top: 5px;"> 
+            <div class="row">
+                <ul class="nav nav-tabs">
+                  <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
+                  <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
+                  <li role="presentation" id="tab-fingerprint"><a href="#fingerprint" class="links" id="link-fingerprint">Account</a></li>
+                  <li role="presentation"><a style="color: black;">{full_name}</a></li>
+                  <button id="logout" class="btn btn-danger pull-right">Logout</button>
+                </ul>
+                <div class="panel panel-default" id="panel-grades" style="visibility: hidden; margin-bottom: 0;">
+                  <table class="table table-hover table-mc-light-blue" id="grade-table">
+                        <thead>
+                            {table_headers}
+                        </thead>
+                        <tbody>
+                            {table_body}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel panel-default" id="panel-class_schedule" style="visibility: hidden; margin-bottom: 0;">
+                    <table class="table table-hover table-mc-light-blue" id="schedule-table">
+                          {class_schedule}
+                    </table>
+                </div>
+                <div class="panel panel-default" id="panel-fingerprint" style="visibility: hidden; margin-bottom: 0;">
+                    <div style="margin: 1em;">
+                        <h3>Record/Update your Fingerprint</h3>
+                        <button id="recordFingerprint" class="btn btn-success btn-lg">Start Recording</button>
+                    </div>
+                </div>
+            </div>  
+            <hr>
+        </div> <!-- /container -->
+        
+        
+        <div class="modal fade" tabindex="-1" role="dialog" id="fingerprintModal">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Record Fingerprint</h4>
+              </div>
+              <div class="modal-body">
+                <p>Press your finger on the scanner, and hold until the scanner light turns off.</p>
+                <hr>
+                <button id="startFingerprint" class="btn btn-success btn-lg">Start</button>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg" data-dismiss="modal">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="../../static/bower_components/bootstrap-validator/dist/validator.min.js"></script>
+        <link href="../../static/bower_components/toastr/toastr.min.css" rel="stylesheet">
+        <script src="../../static/bower_components/toastr/toastr.min.js"></script>
+        <script>
+            $(document).ready(function(e){
+                if(location.hash.trim() === ""){
+                    location.hash = "grades";
                 }else{
-                    $("#panel-" + panel).css('visibility', 'hidden');
-                    $("#panel-" + panel).css('display', 'none');
-                    $("#tab-" + panel).removeClass("active");
-                }               
+                    onhashchange();
+                }
+                
+                $("#logout").click(function(e){
+                    window.location = "/index.html?token=logout#logout";
+                });
+                
+                $("#recordFingerprint").click(function(e){
+                    $("#fingerprintModal").modal('show');
+                });
+                
+                $("#startFingerprint").click(function(e){
+                    $("#startFingerprint").addClass("disabled");
+                   $.get("http://127.0.0.1:5000/api/enrollFp?token=" + getParameterByName("token"), function( data ) {
+                      $("#fingerprintModal").modal('hide');
+                      if(data !== "OK"){
+                         toastr.error(data, "Message");
+                      }else{
+                         toastr.success("Successfully enrolled fingerprint", "Success");
+                      }
+                      $("#startFingerprint").removeClass("disabled");
+                   });
+                });
             });
-        }
-    
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
-    </script>
-    </body>
-    </html>
-    """
-
+            
+            function onhashchange(){
+                $(".links").each(function(){
+                    panel = this.id.split("-")[1];
+                    console.log(panel);
+                    
+                    if(location.hash.replace("#", "").trim() === panel){
+                        $("#panel-" + panel).css('visibility', 'visible');
+                        $("#panel-" + panel).css('display', 'block');
+                        $("#tab-" + panel).addClass("active");
+                    }else{
+                        $("#panel-" + panel).css('visibility', 'hidden');
+                        $("#panel-" + panel).css('display', 'none');
+                        $("#tab-" + panel).removeClass("active");
+                    }               
+                });
+            }
+        
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+        </script>
+        </body>
+        </html>
+        """
 
     @app.route("/dashboard.html")
     def dashboard():
@@ -198,17 +197,16 @@ def controller(app, models, db):
                     if confirmedIncorrect:
                         return redirect("changePassword.html", code=302)
 
-
                 cache = getStudent(user.student_id)
                 string = string.replace("{full_name}", cache["full_name"])
                 string = string.replace("{table_headers}", cache["table_headers"])
                 string = string.replace("{table_body}", cache["table_body"])
                 string = string.replace("{class_schedule}", cache["class_schedule"])
-                string = string.replace("{allow_fingerprint}", "visible;" if user.allowFingerprint else "hidden;display: none;")
+                string = string.replace("{allow_fingerprint}",
+                                        "visible;" if user.allowFingerprint else "hidden;display: none;")
                 return string
             else:
                 return redirect("index.html#login", code=302)
-
 
     @app.route("/api/enrollFp")
     def enroll_fingerprint():
@@ -236,7 +234,7 @@ def controller(app, models, db):
             user = session.query(User).filter(User.token == token).first()
             allowFingerprint = request.args.get('allowFingerprint')
 
-            #For purposes of our demonstration/pilot program, allow all
+            # For purposes of our demonstration/pilot program, allow all
             allowFingerprint = True
 
             if user and allowFingerprint:
@@ -244,7 +242,6 @@ def controller(app, models, db):
                 return "OK"
             else:
                 return "Error: Authentication problem"
-
 
     @app.route("/api/identifyFp")
     def identify_fingerprint():

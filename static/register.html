@@ -337,16 +337,16 @@
         $("#startFingerprint").click(function(e){
             e.preventDefault();
             var checked = $('#waiver').prop('checked');
-            $("#startFingerprint").prop("disabled",true);
+            $("#startFingerprint").addClass("disabled");
             $.get("http://127.0.0.1:5000/api/enrollFp?token=" + token, function( data ) {
                 $("#fingerprintModal").modal('hide');
                 if(data !== "OK"){
                     toastr.error(data, "Message");
-                    $("#startFingerprint").prop("disabled",false);
                 }else{
                     toastr.success("Successfully enrolled fingerprint", "Success");
                     step4();
                 }
+                $("#startFingerprint").removeClass("disabled");
             });
         });
 
