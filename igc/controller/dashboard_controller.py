@@ -157,10 +157,7 @@ def controller(app, models, db):
                   }
                });
             });
-            
-            $("#body").overscroll({
-                "showThumbs" : false
-            });
+            updateBodyScrolling();
         });
         
         function onhashchange(){
@@ -176,7 +173,14 @@ def controller(app, models, db):
                     $("#panel-" + panel).css('visibility', 'hidden');
                     $("#panel-" + panel).css('display', 'none');
                     $("#tab-" + panel).removeClass("active");
-                }                
+                }               
+                updateBodyScrolling();
+            });
+        }
+        
+        function updateBodyScrolling(){
+            $("#body").overscroll({
+                "showThumbs" : false
             });
         }
     
