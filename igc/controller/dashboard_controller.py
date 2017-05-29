@@ -62,16 +62,13 @@ def controller(app, models, db):
     </div>
     -->
     
-    <div class="container noselect">
-        <div class="row">
-            <h4>{full_name}</h4>
-        </div>
-        
+    <div class="container noselect" style="margin-top: 5px;"> 
         <div class="row">
             <ul class="nav nav-tabs">
               <li role="presentation" id="tab-grades"><a href="#grades" class="links" id="link-grades">Grades</a></li>
               <li role="presentation" id="tab-class_schedule"><a href="#class_schedule" class="links" id="link-class_schedule">Class Schedule</a></li>
               <li role="presentation" id="tab-fingerprint"><a href="#fingerprint" class="links" id="link-fingerprint">Account/Fingerprints</a></li>
+              <li role="presentation"><a style="color: black;">{full_name}</a></li>
               <button id="logout" class="btn btn-danger pull-right">Logout</button>
             </ul>
             <div class="panel panel-default" id="panel-grades" style="visibility: hidden; margin-bottom: 0;">
@@ -97,9 +94,6 @@ def controller(app, models, db):
             </div>
         </div>  
         <hr>
-        <footer>
-            <p>&copy; Yoland Gao, Dylan Win, Tanmay Parakala-Jain, Chris Giroud 2017</p>
-        </footer>
     </div> <!-- /container -->
     
     

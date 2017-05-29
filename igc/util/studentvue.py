@@ -123,7 +123,7 @@ def get_class_schedule(outputs):
     <td align="left" style="width:3%;">Period</td>
     <td align="left">Course Title</td>
     <td align="left" style="width:15%;">Room</td>
-    <td align="left" style="width:25%;">Teacher</td>
+    <td align="left" style="width:30%;">Teacher</td>
     """
     table_body = ""
     for clazz in outputs:
