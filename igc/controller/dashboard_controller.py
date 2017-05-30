@@ -123,7 +123,26 @@ def controller(app, models, db):
         <link href="../../static/bower_components/toastr/toastr.min.css" rel="stylesheet">
         <script src="../../static/bower_components/toastr/toastr.min.js"></script>
         <script>
+            var idleTime = 0;
+            function timerIncrement() {
+                console.log("Idle time: " + idleTime);
+                idleTime = idleTime + 1;
+                if (idleTime > 2) { 
+                    $("#logout").click();
+                }
+            }
+        
             $(document).ready(function(e){
+                var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+                $(this).mousemove(function (e) {
+                    console.log("Idle time reset");
+                    idleTime = 0;
+                });
+                $(this).keypress(function (e) {
+                    console.log("Idle time reset");
+                    idleTime = 0;
+                });
+                
                 if(location.hash.trim() === ""){
                     location.hash = "grades";
                 }else{
