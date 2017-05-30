@@ -284,7 +284,15 @@
                         $("#backButton").css('visibility', 'visible');
                         toastr.error(data, 'Incorrect values')
                     }
-                });
+                }).fail(function(){
+                    $("#activate-step-2").prop("disabled",false);
+                    $("#processingSpinner").css('visibility', 'hidden');
+                    $("#processingSpinner").css('display', 'none');
+                    $("#password").addClass("error");
+                    $("#student-id").addClass("error");
+                    $("#backButton").css('visibility', 'visible');
+                    toastr.error('Unable to register', "Error")
+                })
             }else{
                 toastr.error('Please input correct values', 'Incorrect values')
             }
@@ -314,6 +322,8 @@
                     $('ul.setup-panel li a[href="#step-4"]').trigger('click');
                     $(this).remove();
                 }
+            }).fail(function(){
+                toastr.error('Unable to register fingerprint status', "Error")
             });
         }
 
@@ -347,6 +357,8 @@
                     step4();
                 }
                 $("#startFingerprint").removeClass("disabled");
+            }).fail(function(){
+                toastr.error('Unable to start fingerprint', "Error")
             });
         });
 

@@ -78,6 +78,9 @@
                     $("#submit").prop("disabled", false);
                     toastr.error(data, "Error")
                 }
+            }).fail(function(){
+                $("#submit").prop("disabled", false);
+                toastr.error('Server error', "Error")
             });
         });
     });

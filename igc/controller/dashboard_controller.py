@@ -167,7 +167,10 @@ def controller(app, models, db):
                          toastr.success("Successfully enrolled fingerprint", "Success");
                       }
                       $("#startFingerprint").removeClass("disabled");
-                   });
+                   }).fail(function(){
+                        $("#fingerprintModal").modal('hide');
+                        toastr.error('Unable to start fingerprint registration', "Error")
+                    });
                 });
             });
             

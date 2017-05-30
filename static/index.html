@@ -93,6 +93,9 @@
             }else{
                 toastr.error(data, "Error")
             }
+        }).fail(function(){
+            $("#fingerprintModal").modal('hide');
+            toastr.error('Unable to start fingerprint scanner', "Error")
         });
     });
 </script>
