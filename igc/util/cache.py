@@ -63,6 +63,12 @@ def cacheStudentData(studentId, student):
         auth_controller.user_keys.pop(int(studentId))
         return confirmedIncorrect
 
+    browser.click_link_by_partial_href('PXP_Calendar.aspx?AGU=0')
+    first = studentvue.get_calendar(browser)[::-1]
+    browser.find_by_css("img[src='images/PXP/ArrowLeftWhite.gif']").first.click()
+    second = studentvue.get_calendar(browser)[::-1]
+    assignments = first + second
+
     browser.click_link_by_partial_href('PXP_Gradebook.aspx?AGU=0')
     full_name = studentvue.get_full_name(browser)
     outputs = studentvue.get_grade_info(browser)
@@ -77,6 +83,7 @@ def cacheStudentData(studentId, student):
         student["table_headers"] = table_headers
         student["table_body"] = table_body
         student["class_schedule"] = class_schedule
+        student["assignments"] = assignments
         print("Finished caching for student id: " + str(studentId)  + " on thread: " +  str(threading.current_thread()))
     finally:
         lock.release()

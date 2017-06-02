@@ -136,3 +136,23 @@ def get_class_schedule(outputs):
 
 
     return "<thead>" + table_header + "</thead><tbody>" + table_body + "</tbody>"
+
+def get_calendar(browser):
+    days = browser.find_by_css("td[height='50px']:not(.grey):not(.greyHol):not(.greyHolCurrent)")
+    assignments = []
+
+    for i in range(len(days)):
+        daySpans = days[i].find_by_css("*")
+        date = daySpans[0].outer_html.split("'")[3]
+        for i2 in range(1, len(daySpans)):
+            if daySpans[i2].tag_name == "span":
+                textContent = str(daySpans[i2].text).split(":")
+                finalText = ""
+                for i3 in range(1, len(textContent)):
+                    finalText += textContent[i3]
+                finalText = finalText.replace("Score -", "Score - N/A").strip()
+                re.sub(' +',' ', finalText)
+                if finalText != "":
+                    assignments.append({"date" : date, "assignment" : finalText})
+
+    return assignments
