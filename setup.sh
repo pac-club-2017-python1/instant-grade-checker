@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-sh ./_clearDatabase.sh
+sh ./scripts/_clearDatabase.sh
 python ./_clearFingerprints.py
-javac ./bootloader/src/IGC.java
-mv ./bootloader/src/IGC.class ./IGC.class
 echo "Initalization complete"
