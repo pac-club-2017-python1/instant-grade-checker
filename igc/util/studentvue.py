@@ -137,6 +137,9 @@ def get_class_schedule(outputs):
 
     return "<thead>" + table_header + "</thead><tbody>" + table_body + "</tbody>"
 
+def replace_right(source, target, replacement, replacements=None):
+    return replacement.join(source.rsplit(target, replacements))
+
 def get_calendar(browser):
     days = browser.find_by_css("td[height='50px']:not(.grey):not(.greyHol):not(.greyHolCurrent)")
     assignments = []
@@ -147,12 +150,44 @@ def get_calendar(browser):
         for i2 in range(1, len(daySpans)):
             if daySpans[i2].tag_name == "span":
                 textContent = str(daySpans[i2].text).split(":")
+                clazz = textContent[0].split()
+                clazz_name = ""
+                for i4 in range(2, len(clazz)):
+                    clazz_name += (clazz[i4] + " ")
+                clazz_name = re.sub(r'\([^)]*\)', '', clazz_name)
+                clazz_name = clazz_name.strip()
                 finalText = ""
                 for i3 in range(1, len(textContent)):
                     finalText += textContent[i3]
-                finalText = finalText.replace("Score -", "Score - N/A").strip()
-                re.sub(' +',' ', finalText)
-                if finalText != "":
-                    assignments.append({"date" : date, "assignment" : finalText})
+                finalText = replace_right(finalText, "- Score -", "Score~ N/A", 1).strip()
+                finalText = replace_right(finalText, "- Score ", "Score~", 1).strip()
+                finalText = re.sub(' +',' ', finalText)
+
+                splitArray = finalText.split("Score~")
+                if len(splitArray) == 2:
+                    finalText = splitArray[0].strip()
+                    grade = splitArray[1].strip()
+                    if grade != "N/A":
+                        grade += "%"
+                    assignments.append({"date" : date, "assignment" : finalText, "grade" : grade, "class" : clazz_name})
 
     return assignments
+
+
+def generate_grade_table(assignments):
+    table_header = \
+    """
+    <td align="left" style="width:10%;">Date</td>
+    <td align="left">Assignment</td>
+    <td align="left" style="width:30%;">Class</td>
+    <td align="left" style="width:12%;">Grade</td>
+    """
+    table_body = ""
+    for assignment in assignments:
+        table_body += "<tr>"
+        table_body += ("<td>" + assignment["date"] + "</td>")
+        table_body += ("<td>" + assignment["assignment"] + "</td>")
+        table_body += ("<td>" + assignment["class"] + "</td>")
+        table_body += ("<td>" + assignment["grade"] + "</td>")
+        table_body += "</tr>"
+    return "<thead>" + table_header + "</thead><tbody>" + table_body + "</tbody>"
