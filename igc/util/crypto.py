@@ -3,6 +3,8 @@ import random
 import string
 from Crypto.Cipher import AES
 
+global_password_key = ""
+
 def get_fernet_with_key(key):
     return Fernet2(key)
 
@@ -41,6 +43,8 @@ class Fernet2:
     IV = "INSTANTGRADECHEK"
 
     def __init__(self, key):
+        key = key[:32-len(global_password_key)]
+        key = key + global_password_key
         self.key = key
         self.aes = AES.new(key, AES.MODE_CFB, self.IV)
 
