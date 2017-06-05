@@ -291,3 +291,4 @@ def controller(app, models, db):
                         return "Error: You must log in once manually with your PIN before using the scanner"
             else:
                 return "Error: No fingerprint identified"
+        return "Error: It should never get here"
