@@ -274,6 +274,10 @@ def controller(app, models, db):
     def identify_fingerprint():
         from igc.controller.biometrics import scanner
         User = models["user"]
+
+        print "User model is: " + str(User)
+        print "Scanner: " + str(scanner)
+
         with session_scope(db) as session:
             success, target = scanner.identify()
             if success:
