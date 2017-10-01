@@ -46,7 +46,7 @@ class Fernet2:
         key = key[:32-len(global_password_key)]
         key = key + global_password_key
         self.key = key
-        self.aes = AES.new(key, AES.MODE_CFB, self.IV)
+        self.aes = AES.new(bytes(key), AES.MODE_CFB, self.IV)
 
     def encrypt(self, msg):
         ciphertext = base64.urlsafe_b64encode(self.aes.encrypt(msg + "CHECK"))
